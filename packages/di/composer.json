@@ -1,0 +1,36 @@
+{
+    "name": "ifcastle/di",
+    "description": "The dependency injection container",
+    "keywords": ["di", "dependency injection", "container", "ioc"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Edmond Dantes",
+            "email": "edmondifthen@proton.me"
+        }
+    ],
+    "require": {
+        "php": ">=8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\DI\\": ["src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\DI\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5",
+        "rector/rector": "^2.3",
+        "ifcastle/codestyle": "^0.4.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit ./tests",
+        "analysis": "phpstan"
+    }
+}

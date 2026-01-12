@@ -1,0 +1,32 @@
+{
+    "name": "ifcastle/console",
+    "description": "Console Utility for IfCastle Application.",
+    "type": "ifcastle-application",
+    "license": "MIT",
+    "keywords": ["console", "utility", "application", "ifcastle"],
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\Console\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\Console\\": "./tests"
+        }
+    },
+    "require": {
+        "ifcastle/application": "^0.7.5",
+        "symfony/console": "^7.1",
+        "ifcastle/service-manager": "^0.6.3",
+        "ifcastle/events": "^0.2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.60",
+        "amphp/php-cs-fixer-config": "^2.1",
+        "ifcastle/codestyle": "^0.1.7",
+        "phpstan/phpstan": "^1.12"
+    },
+    "bin": [
+        "ifc"
+    ]
+}

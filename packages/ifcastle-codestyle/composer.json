@@ -1,0 +1,23 @@
+{
+    "name": "ifcastle/codestyle",
+    "description": "CodeStyle",
+    "type": "codestyle",
+    "license": "MIT",
+    "keywords": ["ifcastle", "codestyle"],
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\CodeStyle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\CodeStyle\\": "./tests"
+        }
+    },
+    "require": {
+        "php": ">=8.4",
+        "rector/rector": "^2.3",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.92"
+    }
+}

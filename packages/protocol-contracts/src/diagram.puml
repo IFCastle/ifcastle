@@ -1,0 +1,46 @@
+
+@startuml package-related-diagram
+skinparam linetype ortho
+  package IfCastle.Protocol as Protocol {
+    package Exceptions {
+    }
+    package Http {
+    }
+  }
+  package IfCastle #DDDDDD {
+    package Async #DDDDDD {
+    }
+    package DI #DDDDDD {
+    }
+    package DesignPatterns #DDDDDD {
+      package Immutable #DDDDDD {
+      }
+      package KeyValueContext #DDDDDD {
+      }
+    }
+    package Exceptions #DDDDDD {
+    }
+  }
+  package League #DDDDDD {
+    package Uri #DDDDDD {
+      package Contracts #DDDDDD {
+      }
+    }
+  }
+  package Psr #DDDDDD {
+    package Http #DDDDDD {
+      package Message #DDDDDD {
+      }
+    }
+  }
+  Protocol --> Async
+  Protocol --> DI
+  Protocol --> Immutable
+  Protocol --> Exceptions
+  Protocol --> Contracts
+  Protocol --> KeyValueContext
+  Exceptions --> Exceptions
+  Http --> Async
+  Http --> Protocol
+  Http --> Message
+@enduml

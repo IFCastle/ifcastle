@@ -1,0 +1,42 @@
+{
+    "name": "ifcastle/configurator-ini",
+    "description": "Configurator component.",
+    "type": "ifcastle-component",
+    "license": "MIT",
+    "keywords": ["ifcastle", "configurator", "ini"],
+    "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "configurator",
+                "bootloaders": [
+                    "IfCastle\\Configurator\\Configurator"
+                ]
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\Configurator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\Configurator\\": "./tests"
+        }
+    },
+    "require": {
+        "ifcastle/di": "^0.8",
+        "ifcastle/os-utilities": "^0.5",
+        "ifcastle/service-manager": "^0.7",
+        "ifcastle/application": "^0.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.4",
+        "ifcastle/codestyle": "^0.1.7",
+        "phpstan/phpstan": "^1.12"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit ./tests",
+        "analysis": "phpstan"
+    }
+}

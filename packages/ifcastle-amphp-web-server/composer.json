@@ -1,0 +1,63 @@
+{
+    "name": "ifcastle/amphp-web-server",
+    "description": "AMPHP Web server engine.",
+    "type": "ifcastle-application",
+    "license": "MIT",
+    "keywords": ["engine", "ifcastle", "amphp", "web", "server"],
+    "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "amphp-web-server",
+                "mainConfig": {
+                    "server": {
+                        "comment": "Web server engine.\nReactors - number of reactors.\nJobs - number of jobs.",
+                        "config": {
+                            "host": "localhost",
+                            "port": 9095,
+                            "reactors": 1,
+                            "jobs": 1,
+                            "debugMode": false
+                        }
+                    }
+                },
+                "bootloaders": [
+                    "IfCastle\\Configurator\\Configurator"
+                ],
+                "tags": ["amphpWebServer"]
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\AmphpWebServer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\AmphpWebServer\\": "./tests"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "ifcastle/application": "^0.8",
+        "ifcastle/service-manager": "^0.7",
+        "ifcastle/amphp-engine": "^0.3",
+        "ifcastle/amphp-pool": "^1.0",
+        "ifcastle/protocol-contracts": "^0.7"
+    },
+    "require-dev": {
+        "ifcastle/codestyle": "^0.1.1",
+        "phpstan/phpstan": "^1.12",
+        "ifcastle/package-installer": "^0.3.0",
+        "ifcastle/configurator-ini": "^0.7.0",
+        "ifcastle/rest-api": "^0.6.0"
+    },
+    "bin": [
+        "amphp"
+    ],
+    "config": {
+        "allow-plugins": {
+            "ifcastle/package-installer": true
+        }
+    }
+}

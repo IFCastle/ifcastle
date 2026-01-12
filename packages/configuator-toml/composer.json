@@ -1,0 +1,44 @@
+{
+    "name": "ifcastle/configurator-toml",
+    "description": "Configurator component for TOML syntax.",
+    "type": "ifcastle-component",
+    "license": "MIT",
+    "keywords": ["ifcastle", "configurator", "ini"],
+    "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "configurator",
+                "bootloaders": [
+                    "IfCastle\\Configurator\\Toml\\Configurator"
+                ]
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\Configurator\\Toml\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\Configurator\\Toml\\": "./tests"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "ifcastle/di": "^0.8",
+        "ifcastle/os-utilities": "^0.5",
+        "ifcastle/service-manager": "^0.7",
+        "ifcastle/application": "^0.8",
+        "devium/toml": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.4",
+        "ifcastle/codestyle": "^0.1.7",
+        "phpstan/phpstan": "^1.12"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit ./tests",
+        "analysis": "phpstan"
+    }
+}

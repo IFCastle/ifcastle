@@ -1,0 +1,25 @@
+{
+    "name": "ifcastle/protocol-contracts",
+    "description": "Protocol contracts.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["Protocol", "contracts"],
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\Protocol\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "ifcastle/async-contracts": "^0.5",
+        "ifcastle/di": "^0.8",
+        "ifcastle/exceptions": "^5.0",
+        "psr/http-message": "^2.0",
+        "ifcastle/design-patterns": "^0.4",
+        "league/uri-interfaces": "^7.4"
+    },
+    "require-dev": {
+        "ifcastle/codestyle": "^0.1.8",
+        "phpstan/phpstan": "^1.12"
+    }
+}

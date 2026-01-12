@@ -1,0 +1,40 @@
+{
+    "name": "ifcastle/amphp-engine",
+    "description": "AMPHP Engine for IfCastle Application.",
+    "type": "ifcastle-engine",
+    "license": "MIT",
+    "keywords": ["engine", "ifcastle", "amphp", "async", "parallel"],
+    "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "amphp_engine",
+                "bootloaders": [
+                    "IfCastle\\Amphp\\Bootloader"
+                ]
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\Amphp\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\Amphp\\": "./tests"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "ifcastle/application": "^0.8",
+        "amphp/amp": "^3.0",
+        "ifcastle/design-patterns": "^v0.4",
+        "amphp/sync": "^2.3",
+        "ifcastle/async-contracts": "^0.5",
+        "amphp/byte-stream": "^2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.3",
+        "ifcastle/codestyle": "^0.1"
+    }
+}
