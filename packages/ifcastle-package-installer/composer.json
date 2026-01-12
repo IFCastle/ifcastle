@@ -25,7 +25,10 @@
     "phpunit/phpunit": "^11.4"
   },
   "extra": {
-    "class": "IfCastle\\PackageInstaller\\Plugin"
+    "class": "IfCastle\\PackageInstaller\\Plugin",
+    "branch-alias": {
+      "dev-main": "0.3.x-dev"
+    }
   },
   "scripts": {
     "test": "vendor/bin/phpunit ./tests",

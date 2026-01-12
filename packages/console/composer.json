@@ -15,9 +15,9 @@
         }
     },
     "require": {
-        "ifcastle/application": "^0.7.5",
+        "ifcastle/application": "^0.8",
         "symfony/console": "^7.1",
-        "ifcastle/service-manager": "^0.6.3",
+        "ifcastle/service-manager": "^0.7",
         "ifcastle/events": "^0.2.0"
     },
     "require-dev": {
@@ -28,5 +28,10 @@
     },
     "bin": [
         "ifc"
-    ]
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.7.x-dev"
+        }
+    }
 }

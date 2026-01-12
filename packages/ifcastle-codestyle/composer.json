@@ -19,5 +19,10 @@
         "rector/rector": "^2.3",
         "phpstan/phpstan": "^2.1",
         "friendsofphp/php-cs-fixer": "^3.92"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.4.x-dev"
+        }
     }
 }

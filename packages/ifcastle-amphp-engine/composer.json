@@ -12,6 +12,9 @@
                     "IfCastle\\Amphp\\Bootloader"
                 ]
             }
+        },
+        "branch-alias": {
+            "dev-main": "0.3.x-dev"
         }
     },
     "autoload": {

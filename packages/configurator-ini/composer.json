@@ -38,5 +38,18 @@
     "scripts": {
         "test": "vendor/bin/phpunit ./tests",
         "analysis": "phpstan"
+    },
+    "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "configurator",
+                "bootloaders": [
+                    "IfCastle\\Configurator\\Configurator"
+                ]
+            }
+        },
+        "branch-alias": {
+            "dev-main": "0.8.x-dev"
+        }
     }
 }

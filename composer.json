@@ -1,8 +1,8 @@
 {
-    "name": "ifcastle/mono",
+    "name": "ifcastle/ifcastle",
     "type": "project",
-    "description": "IFCastle PHP packages monorepo",
-    "keywords": ["monorepo", "ifcastle", "php"],
+    "description": "IFCastle monorepo",
+    "keywords": ["ifcastle"],
     "license": "MIT",
     "authors": [
         {
@@ -11,32 +11,33 @@
         }
     ],
     "repositories": [
-        {"type": "path", "url": "./packages/amphp-pool"},
-        {"type": "path", "url": "./packages/application"},
-        {"type": "path", "url": "./packages/async-contracts"},
-        {"type": "path", "url": "./packages/configuator-toml"},
-        {"type": "path", "url": "./packages/configurator-ini"},
-        {"type": "path", "url": "./packages/console"},
-        {"type": "path", "url": "./packages/design-patterns"},
-        {"type": "path", "url": "./packages/di"},
-        {"type": "path", "url": "./packages/events"},
-        {"type": "path", "url": "./packages/ifcastle-amphp-engine"},
-        {"type": "path", "url": "./packages/ifcastle-amphp-logger"},
-        {"type": "path", "url": "./packages/ifcastle-amphp-web-server"},
-        {"type": "path", "url": "./packages/ifcastle-codestyle"},
-        {"type": "path", "url": "./packages/ifcastle-monolog"},
-        {"type": "path", "url": "./packages/ifcastle-package-installer"},
-        {"type": "path", "url": "./packages/ifcastle-swoole-engine"},
-        {"type": "path", "url": "./packages/os-utilities"},
-        {"type": "path", "url": "./packages/php-open-telemetry"},
-        {"type": "path", "url": "./packages/protocol-contracts"},
-        {"type": "path", "url": "./packages/rest-api"},
-        {"type": "path", "url": "./packages/service-manager"},
-        {"type": "path", "url": "./packages/type-definitions"},
-        {"type": "path", "url": "./packages/user-manager"}
+        { "type": "path", "url": "./packages/*", "options": { "symlink": true } }
     ],
     "require": {
-        "php": ">=8.4"
+        "php": ">=8.5",
+        "ifcastle/amphp-pool": "*",
+        "ifcastle/application": "*",
+        "ifcastle/async-contracts": "*",
+        "ifcastle/configurator-toml": "*",
+        "ifcastle/configurator-ini": "*",
+        "ifcastle/console": "*",
+        "ifcastle/design-patterns": "*",
+        "ifcastle/di": "*",
+        "ifcastle/events": "*",
+        "ifcastle/amphp-engine": "*",
+        "ifcastle/amphp-logger": "*",
+        "ifcastle/amphp-web-server": "*",
+        "ifcastle/codestyle": "*",
+        "ifcastle/monolog": "*",
+        "ifcastle/package-installer": "*",
+        "ifcastle/swoole-engine": "*",
+        "ifcastle/os-utilities": "*",
+        "ifcastle/open-telemetry": "*",
+        "ifcastle/protocol-contracts": "*",
+        "ifcastle/rest-api": "*",
+        "ifcastle/service-manager": "*",
+        "ifcastle/type-definitions": "*",
+        "ifcastle/user-manager": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.5",
@@ -47,7 +48,8 @@
         "test": "phpunit",
         "analyse": "phpstan analyse",
         "cs:check": "php-cs-fixer fix --dry-run --diff",
-        "cs:fix": "php-cs-fixer fix"
+        "cs:fix": "php-cs-fixer fix",
+        "rector": "rector process --dry-run"
     },
     "config": {
         "sort-packages": true,

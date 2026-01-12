@@ -12,6 +12,9 @@
                     "IfCastle\\Amphp\\Logger\\Bootloader"
                 ]
             }
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
         }
     },
     "autoload": {
@@ -20,7 +23,7 @@
         }
     },
     "require": {
-        "ifcastle/application": "^0.6.0",
+        "ifcastle/application": "^0.8",
         "monolog/monolog": "^3.7",
         "amphp/log": "^2.0"
     }
