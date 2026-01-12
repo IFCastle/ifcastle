@@ -69,7 +69,7 @@ jobs:
           fetch-depth: 0
 
       - name: Split ${{ matrix.package.name }}
-        uses: symplify/monorepo-split-github-action@v2.3
+        uses: symplify/monorepo-split-github-action@2.1
         with:
           package_directory: ${{ matrix.package.directory }}
           repository_organization: 'IFCastle'
