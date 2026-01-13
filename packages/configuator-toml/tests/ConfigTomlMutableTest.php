@@ -8,27 +8,33 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigTomlMutableTest extends TestCase
 {
+    private string $testFile;
+
     #[\Override]
     protected function setUp(): void
     {
-        if (\file_exists('./test.toml')) {
-            \unlink('./test.toml');
-        }
+        $this->testFile = \sys_get_temp_dir() . '/test_' . \uniqid() . '.toml';
+        \file_put_contents($this->testFile, '');
+    }
 
-        // create a new file
-        \file_put_contents('./test.toml', '');
+    #[\Override]
+    protected function tearDown(): void
+    {
+        if (\file_exists($this->testFile)) {
+            \unlink($this->testFile);
+        }
     }
 
 
     public function testSave(): void
     {
-        $config                     = new ConfigTomlMutable('./test.toml');
+        $config                     = new ConfigTomlMutable($this->testFile);
 
         $config->set('foo', 'bar');
         $config->set('baz', 'qux');
         $config->save();
 
-        $this->assertFileExists('./test.toml');
+        $this->assertFileExists($this->testFile);
         $expected                   = <<<TOML
             foo = "bar"
             baz = "qux"
@@ -36,13 +42,13 @@ class ConfigTomlMutableTest extends TestCase
 
         $this->assertEquals(
             \str_replace(["\r\n", "\r"], "\n", $expected),
-            \str_replace(["\r\n", "\r"], "\n", \file_get_contents('test.toml'))
+            \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
 
     public function testSaveNested(): void
     {
-        $config                     = new ConfigTomlMutable('./test.toml');
+        $config                     = new ConfigTomlMutable($this->testFile);
 
         $config->set('foo.bar', 'baz');
         $config->set('foo.qux', 'quux');
@@ -53,7 +59,7 @@ class ConfigTomlMutableTest extends TestCase
 
         $config->save();
 
-        $this->assertFileExists('./test.toml');
+        $this->assertFileExists($this->testFile);
         $expected                   = <<<TOML
             [foo]
             bar = "baz"
@@ -67,7 +73,7 @@ class ConfigTomlMutableTest extends TestCase
 
         $this->assertEquals(
             \str_replace(["\r\n", "\r"], "\n", $expected),
-            \str_replace(["\r\n", "\r"], "\n", \file_get_contents('test.toml'))
+            \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
 }

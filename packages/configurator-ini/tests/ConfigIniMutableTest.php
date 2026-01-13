@@ -8,27 +8,33 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigIniMutableTest extends TestCase
 {
+    private string $testFile;
+
     #[\Override]
     protected function setUp(): void
     {
-        if (\file_exists('./test.ini')) {
-            \unlink('./test.ini');
-        }
+        $this->testFile = \sys_get_temp_dir() . '/test_' . \uniqid() . '.ini';
+        \file_put_contents($this->testFile, '');
+    }
 
-        // create a new file
-        \file_put_contents('./test.ini', '');
+    #[\Override]
+    protected function tearDown(): void
+    {
+        if (\file_exists($this->testFile)) {
+            \unlink($this->testFile);
+        }
     }
 
 
     public function testSave(): void
     {
-        $config                     = new ConfigIniMutable('./test.ini');
+        $config                     = new ConfigIniMutable($this->testFile);
 
         $config->set('foo', 'bar');
         $config->set('baz', 'qux');
         $config->save();
 
-        $this->assertFileExists('./test.ini');
+        $this->assertFileExists($this->testFile);
         $expected                   = <<<INI
             foo = "bar"
             baz = "qux"
@@ -36,13 +42,13 @@ class ConfigIniMutableTest extends TestCase
 
         $this->assertEquals(
             \str_replace(["\r\n", "\r"], "\n", $expected),
-            \str_replace(["\r\n", "\r"], "\n", \file_get_contents('test.ini'))
+            \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
 
     public function testSaveNested(): void
     {
-        $config                     = new ConfigIniMutable('./test.ini');
+        $config                     = new ConfigIniMutable($this->testFile);
 
         $config->set('foo.bar', 'baz');
         $config->set('foo.qux', 'quux');
@@ -53,7 +59,7 @@ class ConfigIniMutableTest extends TestCase
 
         $config->save();
 
-        $this->assertFileExists('./test.ini');
+        $this->assertFileExists($this->testFile);
         $expected                   = <<<INI
 
             ;----------------------------------------
@@ -70,7 +76,7 @@ class ConfigIniMutableTest extends TestCase
 
         $this->assertEquals(
             \str_replace(["\r\n", "\r"], "\n", $expected),
-            \str_replace(["\r\n", "\r"], "\n", \file_get_contents('test.ini'))
+            \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
 }

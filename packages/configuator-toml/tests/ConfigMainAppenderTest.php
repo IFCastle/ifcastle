@@ -8,28 +8,40 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigMainAppenderTest extends TestCase
 {
+    private string $testDir;
+    private string $testFile;
+
     #[\Override]
     protected function setUp(): void
     {
-        if (\file_exists('./main.toml')) {
-            \unlink('./main.toml');
-        }
+        $this->testDir = \sys_get_temp_dir() . '/config_test_' . \uniqid();
+        \mkdir($this->testDir);
+        $this->testFile = $this->testDir . '/main.toml';
+        \file_put_contents($this->testFile, '');
+    }
 
-        // create a new file
-        \file_put_contents('./main.toml', '');
+    #[\Override]
+    protected function tearDown(): void
+    {
+        if (\file_exists($this->testFile)) {
+            \unlink($this->testFile);
+        }
+        if (\is_dir($this->testDir)) {
+            \rmdir($this->testDir);
+        }
     }
 
     public function testAppendSectionIfNotExists(): void
     {
-        $config                     = new ConfigMainAppender(__DIR__);
+        $config                     = new ConfigMainAppender($this->testDir);
         $config->appendSectionIfNotExists('main', [
             'foo' => 'bar',
             'baz' => 'qux',
         ], "My comment\nMy comment 2");
 
-        $this->assertFileExists(__DIR__ . '/main.toml');
+        $this->assertFileExists($this->testFile);
         $expected                   = <<<TOML
-            
+
             # ================================================
             # My comment
             # My comment 2
@@ -41,7 +53,7 @@ class ConfigMainAppenderTest extends TestCase
 
         $this->assertEquals(
             \str_replace(["\r\n", "\r"], "\n", $expected),
-            \str_replace(["\r\n", "\r"], "\n", \file_get_contents(__DIR__ . '/main.toml'))
+            \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
 }
