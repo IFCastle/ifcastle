@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" failOnWarning="true" failOnRisky="true" beStrictAboutOutputDuringTests="true" cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="amphp-engine">
+      <directory>packages/amphp-engine/tests</directory>
+    </testsuite>
+    <testsuite name="amphp-pool">
+      <directory>packages/amphp-pool/tests</directory>
+    </testsuite>
+    <testsuite name="application">
+      <directory>packages/application/tests</directory>
+    </testsuite>
+    <testsuite name="configuator-toml">
+      <directory>packages/configuator-toml/tests</directory>
+    </testsuite>
+    <testsuite name="configurator-ini">
+      <directory>packages/configurator-ini/tests</directory>
+    </testsuite>
+    <testsuite name="design-patterns">
+      <directory>packages/design-patterns/tests</directory>
+    </testsuite>
+    <testsuite name="di">
+      <directory>packages/di/tests</directory>
+    </testsuite>
+    <testsuite name="package-installer">
+      <directory>packages/package-installer/tests</directory>
+    </testsuite>
+    <testsuite name="php-open-telemetry">
+      <directory>packages/php-open-telemetry/tests</directory>
+    </testsuite>
+    <testsuite name="rest-api">
+      <directory>packages/rest-api/tests</directory>
+    </testsuite>
+    <testsuite name="service-manager">
+      <directory>packages/service-manager/tests</directory>
+    </testsuite>
+    <testsuite name="type-definitions">
+      <directory>packages/type-definitions/tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>packages/*/src</directory>
+    </include>
+  </source>
+</phpunit>

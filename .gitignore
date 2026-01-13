@@ -5,7 +5,7 @@ composer.phar
 
 # PHPUnit
 .phpunit.result.cache
-/phpunit.xml
+.phpunit.cache
 
 # PHPStan
 phpstan.neon.dist

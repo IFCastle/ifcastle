@@ -44,6 +44,37 @@
         "phpstan/phpstan": "^2.1",
         "rector/rector": "^2.3"
     },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\AmpPool\\": "packages/amphp-pool/tests/",
+            "IfCastle\\Amphp\\": "packages/amphp-engine/tests/",
+            "IfCastle\\Amphp\\Logger\\": "packages/amphp-logger/tests/",
+            "IfCastle\\AmphpWebServer\\": "packages/amphp-web-server/tests/",
+            "IfCastle\\Application\\": "packages/application/tests/",
+            "IfCastle\\CodeStyle\\": "packages/codestyle/tests/",
+            "IfCastle\\Configurator\\Toml\\": "packages/configuator-toml/tests/",
+            "IfCastle\\Configurator\\": "packages/configurator-ini/tests/",
+            "IfCastle\\Console\\": "packages/console/tests/",
+            "IfCastle\\DesignPatterns\\": "packages/design-patterns/tests/",
+            "IfCastle\\DI\\": "packages/di/tests/",
+            "IfCastle\\Events\\": "packages/events/tests/",
+            "IfCastle\\Monolog\\": "packages/monolog/tests/",
+            "IfCastle\\OpenTelemetry\\": "packages/php-open-telemetry/tests/",
+            "IfCastle\\OsUtilities\\": "packages/os-utilities/tests/",
+            "IfCastle\\PackageInstaller\\": "packages/package-installer/tests/",
+            "IfCastle\\RestApi\\": "packages/rest-api/tests/",
+            "IfCastle\\ServiceManager\\": "packages/service-manager/tests/",
+            "IfCastle\\Services\\": "packages/user-manager/tests/",
+            "IfCastle\\Swoole\\": "packages/swoole-engine/tests/",
+            "IfCastle\\TypeDefinitions\\": "packages/type-definitions/tests/",
+            "Examples\\": [
+                "packages/design-patterns/examples/",
+                "packages/amphp-pool/examples/",
+                "packages/service-manager/examples/",
+                "packages/type-definitions/examples/"
+            ]
+        }
+    },
     "scripts": {
         "test": "phpunit",
         "analyse": "phpstan analyse",
