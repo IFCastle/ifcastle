@@ -88,6 +88,6 @@ class ValueObject extends ValueContainer implements ArraySerializableInterface, 
     #[\Override]
     public static function jsonDecode(string $object): static
     {
-        return static::fromArray(\json_decode($object, true, JSON_THROW_ON_ERROR), null);
+        return static::fromArray(\json_decode($object, true, JSON_THROW_ON_ERROR));
     }
 }

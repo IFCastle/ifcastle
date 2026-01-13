@@ -6,14 +6,8 @@ namespace IfCastle\Events;
 
 interface ExternalEventInterface extends EventInterface
 {
-    /**
-     * @var string
-     */
     final public const string EVENT_TOPICS = 'topics';
 
-    /**
-     * @var string
-     */
     final public const string EVENT_PRODUCER = 'producer';
 
     /**

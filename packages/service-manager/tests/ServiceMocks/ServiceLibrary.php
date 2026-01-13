@@ -22,7 +22,7 @@ class ServiceLibrary
     #[AsServiceMethod]
     public function findBookByAuthor(string $authorName): array
     {
-        return \array_filter($this->books, fn($book) => $book['author'] === $authorName);
+        return \array_filter($this->books, fn(array $book) => $book['author'] === $authorName);
     }
 
     #[AsServiceMethod]
@@ -42,6 +42,6 @@ class ServiceLibrary
     public function removeBook(string $title): void
     {
         // Remove a book from the library
-        $this->books = \array_filter($this->books, fn($book) => $book['title'] !== $title);
+        $this->books = \array_filter($this->books, fn(array $book) => $book['title'] !== $title);
     }
 }

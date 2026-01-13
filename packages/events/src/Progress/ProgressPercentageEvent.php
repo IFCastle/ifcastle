@@ -53,6 +53,6 @@ class ProgressPercentageEvent extends BaseEvent implements ProgressPercentageInt
     #[\Override]
     public static function fromArray(array $array, ?ArraySerializableValidatorInterface $validator = null): static
     {
-        return (new self($array[self::PERCENTAGE] ?? 0, $array[self::DESCRIPTION] ?? ''))->constructFromArray($array);
+        return new self($array[self::PERCENTAGE] ?? 0, $array[self::DESCRIPTION] ?? '')->constructFromArray($array);
     }
 }

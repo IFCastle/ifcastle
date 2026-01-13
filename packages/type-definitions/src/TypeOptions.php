@@ -41,14 +41,14 @@ class TypeOptions extends DefinitionAbstract implements StringableInterface
     public function getMaxLength(): int|null
     {
         // max length of the longest variant
-        return \max(\array_map('strlen', $this->variants));
+        return \max(\array_map(strlen(...), $this->variants));
     }
 
     #[\Override]
     public function getMinLength(): int|null
     {
         // min length of the shortest variant
-        return \min(\array_map('strlen', $this->variants));
+        return \min(\array_map(strlen(...), $this->variants));
     }
 
     #[\Override]

@@ -28,7 +28,7 @@ final readonly class Future implements FutureInterface
      * @throws \Throwable
      */
     #[\Override]
-    public function await(CancellationInterface $cancellation = null): mixed
+    public function await(?CancellationInterface $cancellation = null): mixed
     {
         $channel                    = new Channel(1);
         $state                      = \WeakReference::create($this->state);

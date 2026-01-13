@@ -6,9 +6,6 @@ namespace IfCastle\TypeDefinitions\Value;
 
 interface ContainerUnserializableInterface
 {
-    /**
-     * @var string
-     */
     public const string TYPE_NODE = '@';
 
     /**

@@ -39,13 +39,9 @@ final class FutureState
     
     private ?string $origin = null;
     
-    public function __construct()
-    {
-    }
-    
     public function __destruct()
     {
-        if ($this->throwable && !$this->handled) {
+        if ($this->throwable instanceof \Throwable && !$this->handled) {
             throw new UnhandledFutureError($this->throwable, $this->origin);
         }
     }
@@ -117,11 +113,7 @@ final class FutureState
     
     public function unsubscribe(\Closure|string $callback): void
     {
-        if(!is_string($callback)) {
-            $id                     = (string)spl_object_id($callback);
-        } else {
-            $id                     = $callback;
-        }
+        $id = is_string($callback) ? $callback : (string)spl_object_id($callback);
         
         if (array_key_exists($id, $this->callbacks)) {
             unset($this->callbacks[$id]);

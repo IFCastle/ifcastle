@@ -12,7 +12,7 @@ final class FromConfig extends Dependency implements ProviderInterface
     private string $section = '';
 
     #[\Override]
-    public function getProvider(): ProviderInterface|null
+    public function getProvider(): ProviderInterface
     {
         return $this;
     }

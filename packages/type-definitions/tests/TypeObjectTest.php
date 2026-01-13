@@ -12,7 +12,7 @@ class TypeObjectTest extends TestCase
 {
     public function testEncodeObject(): void
     {
-        $typeObject = (new TypeObject('someName'))
+        $typeObject = new TypeObject('someName')
             ->describe(new TypeInteger('number'))
             ->describe(new TypeFloat('float'))
             ->describe(new TypeBool('boolean'))
@@ -45,7 +45,7 @@ class TypeObjectTest extends TestCase
 
     public function testDecode(): void
     {
-        $typeObject = (new TypeObject('someName'))
+        $typeObject = new TypeObject('someName')
             ->describe(new TypeInteger('number'))
             ->describe(new TypeFloat('float'))
             ->describe(new TypeBool('boolean'))

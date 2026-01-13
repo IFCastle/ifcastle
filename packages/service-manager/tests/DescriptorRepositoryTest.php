@@ -11,7 +11,9 @@ use PHPUnit\Framework\TestCase;
 class DescriptorRepositoryTest extends TestCase
 {
     private RepositoryReaderMemory $repositoryReader;
+    
     private DescriptorRepository $descriptorRepository;
+    
     private ServiceDescriptorBuilderInterface $descriptorBuilder;
 
     #[\Override]
@@ -35,7 +37,7 @@ class DescriptorRepositoryTest extends TestCase
         // Check all methods by name
         $this->assertEquals(
             ['findBookByAuthor', 'addBook', 'getBooks', 'removeBook'],
-            \array_values(\array_map(fn($method) => $method->getName(), $result->getServiceMethods()))
+            \array_values(\array_map(fn(\IfCastle\TypeDefinitions\FunctionDescriptorInterface $method) => $method->getName(), $result->getServiceMethods()))
         );
     }
 }

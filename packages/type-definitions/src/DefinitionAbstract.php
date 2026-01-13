@@ -22,7 +22,7 @@ abstract class DefinitionAbstract implements DefinitionMutableInterface
             \is_string($value)       => new TypeString($name),
             \is_int($value)          => new TypeInteger($name),
             \is_float($value)        => new TypeFloat($name),
-            \is_array($value)        => (new TypeJson($name))->decodeAsNative(),
+            \is_array($value)        => new TypeJson($name)->decodeAsNative(),
             default                  => null,
         };
     }
@@ -36,7 +36,7 @@ abstract class DefinitionAbstract implements DefinitionMutableInterface
             TypesEnum::STRING->value    => new TypeString($name),
             TypesEnum::INTEGER->value   => new TypeInteger($name),
             TypesEnum::FLOAT->value     => new TypeFloat($name),
-            TypesEnum::ARRAY->value     => (new TypeJson($name))->decodeAsNative(),
+            TypesEnum::ARRAY->value     => new TypeJson($name)->decodeAsNative(),
             default                     => null,
         };
     }

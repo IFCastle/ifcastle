@@ -10,6 +10,7 @@ use Swoole\Coroutine;
 abstract class CancellationAbstract implements CancellationInterface
 {
     protected array $callbacks      = [];
+    
     protected bool $isRequested     = false;
     
     public function __construct(

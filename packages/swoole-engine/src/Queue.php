@@ -11,8 +11,10 @@ use Swoole\Coroutine\Channel;
 
 final class Queue                   implements QueueInterface
 {
-    private Channel $channel;
+    private readonly Channel $channel;
+    
     private bool $closed            = false;
+    
     private array $onClose          = [];
     
     public function __construct(int $size = 0)

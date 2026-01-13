@@ -24,7 +24,7 @@ final class PhpdocDescriptionParser
             if (!empty($row['description'])) {
 
                 // If description started with spase + * then remove it
-                $text               = \preg_replace('/^\s*\*\s*/', '', \trim((string) $row['description']));
+                $text               = \preg_replace('/^\s*\*\s*/', '', \trim($row['description']));
 
                 if ($description === [] && empty($text)) {
                     continue;

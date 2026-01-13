@@ -29,19 +29,19 @@ class TypeException extends TypeObject
 
         $this->type                     = TypesEnum::EXCEPTION->value;
 
-        $this->describe((new TypeString('message'))->setDescription('The error message.'))
-                ->describe((new TypeString('code'))->setDescription('The error code.'))
-                ->describe((new TypeString('file'))->setDescription('The file in which the error occurred.'))
-                ->describe((new TypeInteger('line'))->setDescription('The line number on which the error occurred.'))
-                ->describe((new TypeJson('trace'))->setDescription('The stack trace of the error.'))
-                ->describe((new TypeString('class'))->setDescription('The class of exception.'))
-                ->describe((new TypeString('template', isRequired: false, isNullable: true))
+        $this->describe(new TypeString('message')->setDescription('The error message.'))
+                ->describe(new TypeString('code')->setDescription('The error code.'))
+                ->describe(new TypeString('file')->setDescription('The file in which the error occurred.'))
+                ->describe(new TypeInteger('line')->setDescription('The line number on which the error occurred.'))
+                ->describe(new TypeJson('trace')->setDescription('The stack trace of the error.'))
+                ->describe(new TypeString('class')->setDescription('The class of exception.'))
+                ->describe(new TypeString('template', isRequired: false, isNullable: true)
                                ->setDescription('The template of exception.'))
-                ->describe((new TypeList('tags', new TypeString('tag'), isRequired: false, isNullable: true))
+                ->describe(new TypeList('tags', new TypeString('tag'), isRequired: false, isNullable: true)
                                ->setDescription('The tags of the exception.'))
-                ->describe((new TypeJson('data', isRequired: false, isNullable: true))
+                ->describe(new TypeJson('data', isRequired: false, isNullable: true)
                                ->setDescription('The data of the exception.'))
-                ->describe((new TypeSelf('previous'))->setDescription('The previous exception.'));
+                ->describe(new TypeSelf('previous')->setDescription('The previous exception.'));
     }
 
     /**
@@ -67,8 +67,9 @@ class TypeException extends TypeObject
         if ($data instanceof RemoteException) {
             return $data->toArray(true);
         } elseif ($data instanceof \Throwable) {
-            return (new RemoteException($data))->toArray(true);
+            return new RemoteException($data)->toArray(true);
         }
+        
         throw new EncodingException($this, 'Expected instance of Throwable', ['value' => \get_debug_type($data)]);
 
     }

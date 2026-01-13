@@ -13,7 +13,7 @@ use IfCastle\DI\DescriptorProviderInterface;
 final class CustomDescriptor extends Dependency implements DescriptorProviderInterface
 {
     #[\Override]
-    public function getDescriptorProvider(): DescriptorProviderInterface|null
+    public function getDescriptorProvider(): \IfCastle\DI\DescriptorProviderInterface
     {
         return $this;
     }

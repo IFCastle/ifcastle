@@ -29,7 +29,7 @@ final class RemoteException extends BaseException implements ContainerSerializab
     #[\Override]
     public static function definition(): DefinitionMutableInterface
     {
-        return (new TypeException('RemoteException'))
+        return new TypeException('RemoteException')
             ->setInstantiableClass(self::class)
             ->asReference();
     }

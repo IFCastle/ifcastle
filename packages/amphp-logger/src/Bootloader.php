@@ -33,6 +33,7 @@ final class Bootloader implements BootloaderInterface
         $logHandler                 = new StreamHandler(ByteStream\getStdout());
         $logHandler->pushProcessor(new PsrLogMessageProcessor);
         $logHandler->setFormatter(new ConsoleFormatter);
+        
         $logger->pushHandler($logHandler);
         
         return $logger;

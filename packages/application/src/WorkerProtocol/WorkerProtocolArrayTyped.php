@@ -44,9 +44,9 @@ final class WorkerProtocolArrayTyped implements WorkerProtocolInterface
         array                             $parameters   = [],
         ?ExecutionContextInterface        $context      = null,
     ): string {
-        [, $service, $command, $parameters, $context] = (new InterceptorPipeline(
+        [, $service, $command, $parameters, $context] = new InterceptorPipeline(
             $this, [__METHOD__, $service, $command, $parameters, $context], ...$this->interceptors,
-        ))->getLastArguments();
+        )->getLastArguments();
 
         if ($service instanceof CommandDescriptorInterface) {
 
@@ -140,7 +140,7 @@ final class WorkerProtocolArrayTyped implements WorkerProtocolInterface
     }
 
     #[\Override]
-    public function buildWorkerResponse(DefinitionStaticAwareInterface|\Throwable $response): string|null
+    public function buildWorkerResponse(DefinitionStaticAwareInterface|\Throwable $response): string
     {
         if ($response instanceof DefinitionStaticAwareInterface) {
             $definition             = $response::definition();

@@ -12,6 +12,6 @@ class ValueException extends ValueObject
     #[\Override]
     public static function definition(): DefinitionMutableInterface
     {
-        return (new TypeException('exception'))->asReference()->asImmutable();
+        return new TypeException('exception')->asReference()->asImmutable();
     }
 }

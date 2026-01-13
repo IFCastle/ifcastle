@@ -7,7 +7,7 @@ use IfCastle\Async\CancellationInterface;
 
 class CompositeCancellation extends CancellationAbstract
 {
-    private array $cancellations;
+    private readonly array $cancellations;
     
     public function __construct(CancellationInterface ...$cancellations)
     {
@@ -18,10 +18,5 @@ class CompositeCancellation extends CancellationAbstract
     #[\Override]
     protected function await(): void
     {
-        if($this->cancellations === []) {
-            return;
-        }
-        
-        
     }
 }

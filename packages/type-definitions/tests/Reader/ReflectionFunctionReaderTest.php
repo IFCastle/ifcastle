@@ -31,25 +31,14 @@ class ReflectionFunctionReaderTest extends TestCase
 
             $this->assertNotNull($argument, 'Argument is null');
 
-            switch ($argument->getName()) {
-                case 'integer':
-                    $this->assertEquals(TypesEnum::INTEGER->value, $argument->getTypeName());
-                    break;
-                case 'float':
-                    $this->assertEquals(TypesEnum::FLOAT->value, $argument->getTypeName());
-                    break;
-                case 'boolean':
-                    $this->assertEquals(TypesEnum::BOOL->value, $argument->getTypeName());
-                    break;
-                case 'array':
-                    $this->assertEquals(TypesEnum::ARRAY->value, $argument->getTypeName());
-                    break;
-                case 'string':
-                    $this->assertEquals(TypesEnum::STRING->value, $argument->getTypeName());
-                    break;
-                default:
-                    $this->fail('Unknown argument type');
-            }
+            match ($argument->getName()) {
+                'integer' => $this->assertEquals(TypesEnum::INTEGER->value, $argument->getTypeName()),
+                'float' => $this->assertEquals(TypesEnum::FLOAT->value, $argument->getTypeName()),
+                'boolean' => $this->assertEquals(TypesEnum::BOOL->value, $argument->getTypeName()),
+                'array' => $this->assertEquals(TypesEnum::ARRAY->value, $argument->getTypeName()),
+                'string' => $this->assertEquals(TypesEnum::STRING->value, $argument->getTypeName()),
+                default => $this->fail('Unknown argument type'),
+            };
         }
 
         $this->assertNotNull($definition->getReturnType(), 'Return type is null');
@@ -77,25 +66,14 @@ class ReflectionFunctionReaderTest extends TestCase
 
             $this->assertNotNull($argument, 'Argument is null');
 
-            switch ($argument->getName()) {
-                case 'integer':
-                    $this->assertEquals(TypesEnum::INTEGER->value, $argument->getTypeName());
-                    break;
-                case 'float':
-                    $this->assertEquals(TypesEnum::FLOAT->value, $argument->getTypeName());
-                    break;
-                case 'boolean':
-                    $this->assertEquals(TypesEnum::BOOL->value, $argument->getTypeName());
-                    break;
-                case 'array':
-                    $this->assertEquals(TypesEnum::ARRAY->value, $argument->getTypeName());
-                    break;
-                case 'string':
-                    $this->assertEquals(TypesEnum::STRING->value, $argument->getTypeName());
-                    break;
-                default:
-                    $this->fail('Unknown argument type');
-            }
+            match ($argument->getName()) {
+                'integer' => $this->assertEquals(TypesEnum::INTEGER->value, $argument->getTypeName()),
+                'float' => $this->assertEquals(TypesEnum::FLOAT->value, $argument->getTypeName()),
+                'boolean' => $this->assertEquals(TypesEnum::BOOL->value, $argument->getTypeName()),
+                'array' => $this->assertEquals(TypesEnum::ARRAY->value, $argument->getTypeName()),
+                'string' => $this->assertEquals(TypesEnum::STRING->value, $argument->getTypeName()),
+                default => $this->fail('Unknown argument type'),
+            };
         }
 
         $this->assertNotNull($definition->getReturnType(), 'Return type is null');
@@ -107,11 +85,8 @@ class ReflectionFunctionReaderTest extends TestCase
         $possibleError = $definition->getPossibleErrors()[0];
 
         $this->assertInstanceOf(TypeErrorMessage::class, $possibleError);
-
-        if ($possibleError instanceof TypeErrorMessage) {
-            $this->assertEquals('Error message', $possibleError->getName());
-            $this->assertEquals('This is an error', $possibleError->getDescription());
-        }
+        $this->assertEquals('Error message', $possibleError->getName());
+        $this->assertEquals('This is an error', $possibleError->getDescription());
 
         $this->assertNotEmpty($definition->getAttributes(), 'Attributes is empty');
         $this->assertCount(2, $definition->getAttributes(), 'Attributes count is not 1');

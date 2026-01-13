@@ -9,9 +9,10 @@ use Swoole\Coroutine\Channel;
 final class ChannelAdapter implements ChannelInterface
 {
     private bool $closed = false;
+    
     private array $onClose = [];
     
-    public function __construct(private Channel $channel) {}
+    public function __construct(private readonly Channel $channel) {}
     
     #[\Override] public function send(mixed $data): void
     {

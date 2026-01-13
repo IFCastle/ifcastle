@@ -68,7 +68,7 @@ final class HttpReactorEngine extends \IfCastle\Amphp\AmphpEngine
         $httpServer                 = new SocketHttpServer($serverLogger, $socketFactory, $clientFactory);
 
         // 2. Expose the server to the network
-        $httpServer->expose($host . ':' . $port, (new BindContext())->withTcpNoDelay());
+        $httpServer->expose($host . ':' . $port, new BindContext()->withTcpNoDelay());
 
         $requestPlan                = $systemEnvironment->resolveDependency(RequestPlanInterface::class);
         $publicEnvironment          = $systemEnvironment->findDependency(PublicEnvironmentInterface::class);

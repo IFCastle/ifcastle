@@ -11,7 +11,7 @@ final readonly class CoroutineAdapter implements CoroutineInterface
     public function __construct(private int $cid) {}
     
     #[\Override]
-    public function getCoroutineId(): int|string
+    public function getCoroutineId(): int
     {
         return $this->cid;
     }
@@ -35,7 +35,7 @@ final readonly class CoroutineAdapter implements CoroutineInterface
     }
     
     #[\Override]
-    public function stop(\Throwable $throwable = null): bool
+    public function stop(?\Throwable $throwable = null): bool
     {
         return Coroutine::cancel($this->cid);
     }

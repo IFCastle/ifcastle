@@ -21,7 +21,7 @@ use Attribute;
 final class FromRegistry extends Dependency implements ProviderInterface
 {
     #[\Override]
-    public function getProvider(): ProviderInterface|null
+    public function getProvider(): ProviderInterface
     {
         return $this;
     }

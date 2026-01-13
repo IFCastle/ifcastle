@@ -12,7 +12,7 @@ class ValueTime extends ValueContainer
     #[\Override]
     public static function definition(): DefinitionMutableInterface
     {
-        return (new TypeTime('time'))->setInstantiableClass(static::class);
+        return new TypeTime('time')->setInstantiableClass(static::class);
     }
 
     public function __construct(int $hour, int $minute, int $second = 0, ?int $microsecond = null, ?int $timezoneOffset = null)

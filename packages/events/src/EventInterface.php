@@ -13,14 +13,8 @@ namespace IfCastle\Events;
  */
 interface EventInterface
 {
-    /**
-     * @var string
-     */
     final public const string EVENT_NAME = 'name';
 
-    /**
-     * @var string
-     */
     final public const string EVENT_TIMESTAMP = 'timestamp';
 
     public function getEventName(): string;

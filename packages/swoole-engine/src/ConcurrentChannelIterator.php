@@ -12,9 +12,10 @@ use Traversable;
 final class ConcurrentChannelIterator implements ConcurrentIteratorInterface
 {
     private mixed $value;
+    
     private int $position = 0;
     
-    public function __construct(private Channel $channel) {}
+    public function __construct(private readonly Channel $channel) {}
     
     #[\Override]
     public function continue(?CancellationInterface $cancellation = null): bool
@@ -31,7 +32,7 @@ final class ConcurrentChannelIterator implements ConcurrentIteratorInterface
 
         $cancellation->subscribe(static fn() => $waitObject->push(false));
         
-        Coroutine::create(function () use ($cancellation, $waitObject) {
+        Coroutine::create(function () use ($waitObject) {
             
             try {
                 $this->value            = $this->channel->pop();

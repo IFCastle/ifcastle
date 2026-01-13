@@ -7,7 +7,7 @@ use Swoole\Coroutine\Channel;
 
 class CancellationByTrigger extends CancellationAbstract
 {
-    private Channel $channel;
+    private readonly Channel $channel;
     
     public function __construct(callable $setter, string $message = 'The operation was cancelled')
     {
@@ -15,7 +15,7 @@ class CancellationByTrigger extends CancellationAbstract
         
         $this->channel              = new Channel(1);
         $channel                    = $this->channel;
-        $setter(static fn(\Throwable $throwable = null) => $channel->push($throwable));
+        $setter(static fn(?\Throwable $throwable = null) => $channel->push($throwable));
     }
     
     #[\Override]

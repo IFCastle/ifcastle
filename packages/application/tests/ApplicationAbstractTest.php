@@ -39,7 +39,7 @@ class ApplicationAbstractTest extends TestCase
             ]
         );
 
-        (new Runner(self::APP_DIR, 'test', TestApplication::class))
+        new Runner(self::APP_DIR, 'test', TestApplication::class)
             ->defineBootloaderBuilder($bootloader)
             ->runAndDispose();
 

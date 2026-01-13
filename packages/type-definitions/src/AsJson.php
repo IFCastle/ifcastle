@@ -11,6 +11,6 @@ readonly class AsJson extends Type
 {
     public function __construct()
     {
-        parent::__construct((new TypeJson())->decodeAsNative());
+        parent::__construct(new TypeJson()->decodeAsNative());
     }
 }

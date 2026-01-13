@@ -93,7 +93,7 @@ abstract class ExecutorAbstract implements ExecutorInterface
             // Apply interceptors if exists
             //
             if ($this->interceptors !== []) {
-                $result             = (new InterceptorPipeline($this, [$parameter, $methodDescriptor, $parameters], ...$this->interceptors))
+                $result             = new InterceptorPipeline($this, [$parameter, $methodDescriptor, $parameters], ...$this->interceptors)
                                     ->getResult();
 
                 if ($result !== null) {

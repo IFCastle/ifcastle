@@ -8,9 +8,6 @@ use IfCastle\Exceptions\SystemException;
 
 class FileSystemException extends SystemException
 {
-    /**
-     * @var string
-     */
     final public const string FILE_SYSTEM  = 'fileSystem';
 
     public function __construct(array|string $message, array $debug = [], ?\Throwable $previous = null)

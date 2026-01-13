@@ -14,7 +14,7 @@ class NoDefinition extends DefinitionAbstract
     public static function get(): self
     {
         if (self::$noDefinition === null) {
-            self::$noDefinition     = (new self())->asImmutable();
+            self::$noDefinition     = new self()->asImmutable();
         }
 
         return self::$noDefinition;

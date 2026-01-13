@@ -120,13 +120,13 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     }
 
     #[\Override]
-    public function delay(float|int $delay, callable $callback): int|string
+    public function delay(float|int $delay, callable $callback): string
     {
         return EventLoop::delay($delay, $callback);
     }
 
     #[\Override]
-    public function interval(float|int $interval, callable $callback): int|string
+    public function interval(float|int $interval, callable $callback): string
     {
         return EventLoop::repeat($interval, $callback);
     }

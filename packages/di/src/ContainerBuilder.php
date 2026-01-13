@@ -42,7 +42,7 @@ class ContainerBuilder implements BuilderInterface
         $keys                       = \is_array($interface) ? $interface : [$interface];
         $firstKey                   = \array_shift($keys);
 
-        if (false === $redefine && \array_key_exists($firstKey, $this->bindings)) {
+        if (false === $redefine && \array_key_exists((string) $firstKey, $this->bindings)) {
             if ($isThrow) {
                 throw new \InvalidArgumentException("Interface '$firstKey' already bound to '" . $this->getKeyAsString($firstKey) . "'");
             }
@@ -51,7 +51,7 @@ class ContainerBuilder implements BuilderInterface
 
         }
 
-        if ($redefine && \array_key_exists($firstKey, $this->bindings) && $this->bindings[$firstKey] instanceof AliasInitializer) {
+        if ($redefine && \array_key_exists((string) $firstKey, $this->bindings) && $this->bindings[$firstKey] instanceof AliasInitializer) {
             $alias                  = $this->bindings[$firstKey]->alias;
 
             if ($alias !== $firstKey) {

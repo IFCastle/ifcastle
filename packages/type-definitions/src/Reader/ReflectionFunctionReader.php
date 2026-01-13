@@ -228,7 +228,7 @@ class ReflectionFunctionReader implements FunctionReaderInterface
         }
 
         if ($error->template !== '') {
-            return (new TypeErrorMessage($error->template, ...$error->parameters))->setDescription($error->description);
+            return new TypeErrorMessage($error->template, ...$error->parameters)->setDescription($error->description);
         }
 
         // Try to extract the template from the error class if possible

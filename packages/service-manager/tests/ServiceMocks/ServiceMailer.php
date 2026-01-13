@@ -8,8 +8,6 @@ use IfCastle\ServiceManager\AsServiceMethod;
 
 class ServiceMailer
 {
-    public function __construct() {}
-
     public array $sendLog = [];
 
     #[AsServiceMethod]

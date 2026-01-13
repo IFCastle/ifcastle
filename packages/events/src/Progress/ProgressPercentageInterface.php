@@ -6,14 +6,8 @@ namespace IfCastle\Events\Progress;
 
 interface ProgressPercentageInterface extends ProgressInterface
 {
-    /**
-     * @var string
-     */
     final public const string PERCENTAGE = 'percentage';
 
-    /**
-     * @var string
-     */
     final public const string DESCRIPTION = 'description';
 
     /**

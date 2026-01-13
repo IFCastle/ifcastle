@@ -38,13 +38,13 @@ final class HttpReactor implements WorkerEntryPointInterface
             throw new FatalWorkerException('Application directory not set in pool context');
         }
 
-        (new WorkerRunner(
+        new WorkerRunner(
             $worker,
             HttpReactorEngine::class,
             $poolContext[SystemEnvironmentInterface::APPLICATION_DIR],
             WorkerTypeEnum::REACTOR->value,
             WebServerApplication::class,
             [WorkerTypeEnum::REACTOR->value]
-        ))->runAndDispose();
+        )->runAndDispose();
     }
 }

@@ -52,7 +52,7 @@ abstract class ApplicationAbstract implements ApplicationInterface
         }
 
         $this->isStarted            = true;
-        $this->startTime            = (new SystemClock())->now();
+        $this->startTime            = new SystemClock()->now();
         $this->vendorDir            = $this->appDir . '/vendor';
 
         if (false === \is_dir($this->vendorDir)) {
@@ -73,7 +73,7 @@ abstract class ApplicationAbstract implements ApplicationInterface
             }
 
             if ($this->endTime === 0) {
-                $this->endTime      = (new SystemClock())->now();
+                $this->endTime      = new SystemClock()->now();
             }
 
             // Put to log only critical errors
@@ -146,7 +146,7 @@ abstract class ApplicationAbstract implements ApplicationInterface
         }
 
         $this->isEnded              = true;
-        $this->endTime              = (new SystemClock())->now();
+        $this->endTime              = new SystemClock()->now();
 
         if ($this->engine instanceof DisposableInterface) {
             $this->engine->dispose();

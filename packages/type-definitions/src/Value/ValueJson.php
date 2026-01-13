@@ -12,6 +12,6 @@ class ValueJson extends ValueContainer
     #[\Override]
     public static function definition(): DefinitionMutableInterface
     {
-        return (new TypeJson('json'))->setInstantiableClass(static::class);
+        return new TypeJson('json')->setInstantiableClass(static::class);
     }
 }

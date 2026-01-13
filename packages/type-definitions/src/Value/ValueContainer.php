@@ -17,7 +17,7 @@ class ValueContainer implements ValueContainerInterface
     #[\Override]
     public static function definition(): DefinitionMutableInterface
     {
-        return (new TypeMixed('mixed'))->setInstantiableClass(static::class);
+        return new TypeMixed('mixed')->setInstantiableClass(static::class);
     }
 
     #[\Override]

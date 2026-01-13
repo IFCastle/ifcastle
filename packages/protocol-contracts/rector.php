@@ -8,5 +8,5 @@ use Rector\Config\RectorConfig;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__ . '/src']);
 
-    (new RectorConfigurator())->configureSets($rectorConfig);
+    new RectorConfigurator()->configureSets($rectorConfig);
 };

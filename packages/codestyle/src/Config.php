@@ -41,7 +41,7 @@ class Config extends PhpCsFixerConfig
             'combine_consecutive_unsets' => true,
             'declare_strict_types' => true,
             'function_to_constant' => true,
-            'line_ending' => true,
+            'line_ending' => false,
             'multiline_whitespace_before_semicolons' => true,
             'native_function_invocation' => ['include' => ['@internal'], 'scope' => 'namespaced'],
             'no_empty_phpdoc' => true,

@@ -94,7 +94,7 @@ final class Awaiter
         };
         
         $handler                    = static function (mixed $futureStateOrException = null)
-        use ($channel, $complete, &$handler, $futures, $cancellation,
+        use ($channel, $complete,
             &$results, &$errors, $futuresKeys, &$awaiting, &$error, $futuresAwaitCount, $shouldIgnoreError) {
             
             if($futureStateOrException instanceof \Throwable) {
@@ -126,7 +126,7 @@ final class Awaiter
                     }
 
                     $error          = match (true) {
-                        count($awaiting) === 0
+                        $awaiting === []
                                     => new CompositeException('No more objects to wait for, but success was not achieved', ...$errors),
                         count($awaiting) < ($futuresAwaitCount - count($results))
                                     => new CompositeException('Too many errors, waiting aborted', ...$errors),
@@ -161,7 +161,7 @@ final class Awaiter
                 unset($awaiting[$id]);
             }
             
-            if(count($awaiting) === 0 || $futuresAwaitCount <= count($results)) {
+            if($awaiting === [] || $futuresAwaitCount <= count($results)) {
                 try {
                     $channel->push(true);
                 } finally {

@@ -25,7 +25,9 @@ class ArraySerializableTraitTest extends TestCase
 
         $object = new class ($array) {
             use ArraySerializableTrait;
+            
             public function __construct(public array $array) {}
+            
             public function toArray(): array
             {
                 return $this->serializeToArray($this->array);
@@ -52,7 +54,9 @@ class ArraySerializableTraitTest extends TestCase
 
         $object = new class ($array) {
             use ArraySerializableTrait;
+            
             public function __construct(public array $array) {}
+            
             public static function fromArray(array $array): static
             {
                 return new static(self::unserializeFromArray($array));

@@ -14,14 +14,14 @@ class RemoteExceptionTest extends TestCase
         $exception                  = new \Exception('Test exception');
         $remoteException            = new RemoteException($exception);
 
-        $expected = array (
+        $expected =  [
             'type' => 'Exception',
             'source' =>
-                array (
+                 [
                     'source' => self::class,
                     'type' => '->',
                     'function' => __FUNCTION__,
-                ),
+                ],
             'file' => __FILE__,
             'line' => $line,
             'message' => 'Test exception',
@@ -30,7 +30,7 @@ class RemoteExceptionTest extends TestCase
             'previous' => null,
             'remotePrevious' => null,
             'container' => RemoteException::class,
-        );
+        ];
         
         $serialized = $remoteException->toArray(true);
         

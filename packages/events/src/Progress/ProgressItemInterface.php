@@ -8,19 +8,10 @@ use IfCastle\TypeDefinitions\ResultInterface;
 
 interface ProgressItemInterface extends ProgressInterface
 {
-    /**
-     * @var string
-     */
     final public const string ITEM_CURRENT = 'item_current';
 
-    /**
-     * @var string
-     */
     final public const string ITEM_TOTAL = 'item_total';
 
-    /**
-     * @var string
-     */
     final public const string ITEM_NAME = 'item_name';
 
     final public const string RESULT = 'result';

@@ -27,7 +27,7 @@ final class CoroutineContext implements CoroutineContextInterface
     }
 
     #[\Override]
-    public function getCoroutineId(): string|int
+    public function getCoroutineId(): int
     {
         $currentFiber               = \Fiber::getCurrent();
 
@@ -39,7 +39,7 @@ final class CoroutineContext implements CoroutineContextInterface
     }
 
     #[\Override]
-    public function getCoroutineParentId(): string|int
+    public function getCoroutineParentId(): int
     {
         return -1;
     }

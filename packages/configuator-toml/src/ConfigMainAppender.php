@@ -41,7 +41,7 @@ final class ConfigMainAppender extends ConfigTomlMutable implements MainConfigAp
         $config                     = [];
         $pointer                    = &$config;
 
-        while (\count($path) > 0) {
+        while ($path !== []) {
             $section                = \array_shift($path);
             $pointer[$section]      = [];
             $pointer                = &$pointer[$section];

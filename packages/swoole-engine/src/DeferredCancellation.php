@@ -9,6 +9,7 @@ use IfCastle\Async\DeferredCancellationInterface;
 final class DeferredCancellation implements DeferredCancellationInterface
 {
     private array $callbacks = [];
+    
     private bool $isCancelled = false;
     
     #[\Override]
@@ -32,6 +33,7 @@ final class DeferredCancellation implements DeferredCancellationInterface
         
         $callbacks                  = $this->callbacks;
         $this->callbacks            = [];
+        
         $this->isCancelled          = true;
         
         foreach ($callbacks as $callback) {

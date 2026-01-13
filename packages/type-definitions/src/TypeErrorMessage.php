@@ -12,7 +12,7 @@ class TypeErrorMessage extends TypeObject
 
         $this->type                 = 'errorMessage';
 
-        $this->describe((new TypeString('message'))->setDescription('The error message.'));
+        $this->describe(new TypeString('message')->setDescription('The error message.'));
 
         if ($parameters !== []) {
 
