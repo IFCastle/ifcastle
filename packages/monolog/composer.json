@@ -28,6 +28,7 @@
         }
     },
     "require": {
+        "php": ">=8.5",
         "ifcastle/application": "^0.8",
         "monolog/monolog": "^3.7",
         "ifcastle/exceptions": "^5.0"

@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "php": "^8.4",
+        "php": ">=8.5",
         "ifcastle/application": "^0.8",
         "ifcastle/service-manager": "^0.7",
         "ifcastle/amphp-engine": "^0.3",

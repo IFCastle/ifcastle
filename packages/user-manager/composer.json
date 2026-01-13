@@ -28,6 +28,7 @@
         }
     },
     "require": {
+        "php": ">=8.5",
         "ifcastle/di": "^0.8",
         "ifcastle/service-manager": "^0.7",
         "ifcastle/protocol-contracts": "^0.7"

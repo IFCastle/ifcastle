@@ -10,7 +10,7 @@
         }
     },
     "require": {
-        "php": "^8.4",
+        "php": ">=8.5",
         "ifcastle/async-contracts": "^0.5",
         "ifcastle/di": "^0.8",
         "ifcastle/exceptions": "^5.0",

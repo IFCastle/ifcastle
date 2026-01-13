@@ -28,10 +28,10 @@
         }
     },
     "require": {
-        "php": "^8.4",
+        "php": ">=8.5",
         "ifcastle/application": "^0.8",
         "amphp/amp": "^3.0",
-        "ifcastle/design-patterns": "^v0.4",
+        "ifcastle/design-patterns": "^0.4",
         "amphp/sync": "^2.3",
         "ifcastle/async-contracts": "^0.5",
         "amphp/byte-stream": "^2.1"

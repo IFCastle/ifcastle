@@ -28,6 +28,7 @@
         }
     },
     "require": {
+        "php": ">=8.5",
         "ifcastle/application": "^0.8",
         "ifcastle/design-patterns": "^0.4",
         "ifcastle/async-contracts": "^0.5.0"

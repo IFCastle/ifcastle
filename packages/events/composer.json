@@ -20,6 +20,7 @@
         }
     },
     "require": {
+        "php": ">=8.5",
         "ifcastle/exceptions": "^5.1",
         "ifcastle/type-definitions": "^0.5.16",
         "psr/event-dispatcher": "^1.0"

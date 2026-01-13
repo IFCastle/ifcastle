@@ -25,6 +25,7 @@
         }
     },
     "require": {
+        "php": ">=8.5",
         "ifcastle/di": "^0.8",
         "ifcastle/os-utilities": "^0.5",
         "ifcastle/service-manager": "^0.7",

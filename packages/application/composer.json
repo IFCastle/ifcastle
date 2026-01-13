@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "php": "^8.4",
+        "php": ">=8.5",
         "ifcastle/exceptions": "^5.0",
         "ifcastle/di": "^0.8.0",
         "ifcastle/design-patterns": "^0.4",
