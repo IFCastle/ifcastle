@@ -53,7 +53,7 @@ final class AsyncStack implements StackInterface
             return;
         }
 
-        $this->queue->pushAsync($object);
+        $this->queue->pushAsync($object)->ignore();
         ++$this->size;
     }
 
