@@ -60,7 +60,7 @@ use IfCastle\Console\ConsoleApplication;
         }
 
         if(!empty($GLOBALS['_composer_bin_dir'])) {
-            $dir = $GLOBALS['_composer_bin_dir'];
+            $dir = realpath($GLOBALS['_composer_bin_dir'].'/../../');
         }
 
         if (null === $dir) {
