@@ -28,7 +28,7 @@ class WebServerEngine extends \IfCastle\Amphp\AmphpEngine implements WorkerPoolB
     protected array $ampWorkerGroups = [];
 
     /**
-     * @var \IfCastle\AmpPool\WorkerPool<object, object>|null
+     * @var WorkerPool|null
      */
     protected WorkerPool|null $workerPool = null;
 

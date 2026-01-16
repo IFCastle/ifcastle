@@ -94,7 +94,6 @@ final class HttpReactorEngine extends \IfCastle\Amphp\AmphpEngine
                     $requestEnv->dispose();
                 }
 
-                /* @phpstan-ignore-next-line */
                 if ($response instanceof HttpResponseInterface) {
                     return self::buildResponse($response);
                 }

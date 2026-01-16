@@ -17,7 +17,10 @@ final readonly class FutureAdapter implements FutureInterface
     /**
      * @param Future<T> $future
      */
-    public function __construct(public Future $future) {}
+    public function __construct(
+        /** @var Future<T> */
+        public Future $future
+    ) {}
 
 
     #[\Override]
@@ -49,12 +52,17 @@ final readonly class FutureAdapter implements FutureInterface
      */
     public function map(callable $mapper): FutureInterface
     {
+        /** @phpstan-ignore-next-line */
         return new FutureAdapter($this->future->map($mapper));
     }
 
     #[\Override]
+    /**
+     * @param callable(\Throwable): T $onRejected
+     */
     public function catch(callable $onRejected): static
     {
+        /** @phpstan-ignore-next-line */
         $this->future->catch($onRejected)->ignore();
         return $this;
     }

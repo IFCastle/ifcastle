@@ -26,6 +26,25 @@ use function Amp\Sync\createChannelPair;
 
 final class CoroutineScheduler implements CoroutineSchedulerInterface
 {
+    /**
+     * @param iterable<array-key, \IfCastle\Async\FutureInterface<mixed>> $futures
+     * @return array<array-key, \Amp\Future<mixed>>
+     */
+    private static function unwrapFutures(iterable $futures): array
+    {
+        $ampFutures = [];
+
+        foreach ($futures as $key => $future) {
+            if ($future instanceof FutureAdapter) {
+                $ampFutures[$key] = $future->future;
+                continue;
+            }
+
+            throw new UnexpectedValueType('$futures', $future, FutureAdapter::class);
+        }
+
+        return $ampFutures;
+    }
     public static function resolveCancellation(CancellationInterface|null $cancellation): ?\Amp\Cancellation
     {
         if ($cancellation instanceof CancellationExternalAdapter) {
@@ -46,9 +65,14 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     }
 
     #[\Override]
+    /**
+     * @template Tk of array-key
+     * @param iterable<Tk, \IfCastle\Async\FutureInterface<mixed>> $futures
+     * @return array<Tk, mixed>
+     */
     public function await(iterable $futures, ?CancellationInterface $cancellation = null): array
     {
-        return await($futures, self::resolveCancellation($cancellation));
+        return await(self::unwrapFutures($futures), self::resolveCancellation($cancellation));
     }
 
     #[\Override]
@@ -57,7 +81,7 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
      */
     public function awaitFirst(iterable $futures, ?CancellationInterface $cancellation = null): mixed
     {
-        return awaitFirst($futures, self::resolveCancellation($cancellation));
+        return awaitFirst(\array_values(self::unwrapFutures($futures)), self::resolveCancellation($cancellation));
     }
 
     #[\Override]
@@ -66,7 +90,7 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
      */
     public function awaitFirstSuccessful(iterable $futures, ?CancellationInterface $cancellation = null
     ): mixed {
-        return awaitAny($futures, self::resolveCancellation($cancellation));
+        return awaitAny(self::unwrapFutures($futures), self::resolveCancellation($cancellation));
     }
 
     #[\Override]
@@ -76,13 +100,17 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
      */
     public function awaitAll(iterable $futures, ?CancellationInterface $cancellation = null): array
     {
-        return awaitAll($futures, self::resolveCancellation($cancellation));
+        return awaitAll(self::unwrapFutures($futures), self::resolveCancellation($cancellation));
     }
 
     #[\Override]
+    /**
+     * @template Tk of array-key
+     * @param iterable<Tk, \IfCastle\Async\FutureInterface<mixed>> $futures
+     */
     public function awaitAnyN(int $count, iterable $futures, ?CancellationInterface $cancellation = null): array
     {
-        return awaitAnyN($count, $futures, self::resolveCancellation($cancellation));
+        return awaitAnyN($count, self::unwrapFutures($futures), self::resolveCancellation($cancellation));
     }
 
     #[\Override]

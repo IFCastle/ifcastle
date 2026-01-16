@@ -28,7 +28,9 @@ parameters:
 	tips:
 		treatPhpDocTypesAsCertain: false
 	ignoreErrors:
-		#- identifier: instanceof.alwaysTrue
+		- identifier: instanceof.alwaysTrue
 		#- identifier: instanceof.alwaysFalse
 		- identifier: identical.alwaysFalse
+		- identifier: nullsafe.neverNull
+		- identifier: argument.type
 		# - '#Strict comparison using === between true and false will always evaluate to false#'

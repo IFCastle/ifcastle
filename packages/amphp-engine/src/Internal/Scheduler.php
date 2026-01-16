@@ -156,7 +156,8 @@ final class Scheduler
             try {
                 $coroutine->execute();
             } catch (\Throwable $exception) {
-                if ($exception !== $this->stopException) {
+                $stopException = $selfRef->get()?->stopException;
+                if ($stopException === null || $exception !== $stopException) {
                     throw $exception;
                 }
             } finally {
