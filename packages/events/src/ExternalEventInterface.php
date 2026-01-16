@@ -15,6 +15,9 @@ interface ExternalEventInterface extends EventInterface
      */
     public function getEventTopics(): array;
 
+    /**
+     * @param array<string> $eventTopics
+     */
     public function setEventTopics(array $eventTopics): static;
 
     public function addEventTopic(string $eventTopic): static;
