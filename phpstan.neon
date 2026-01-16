@@ -1,7 +1,30 @@
 parameters:
 	level: 6
+	tmpDir: .phpstan.cache
 	paths:
-		- src
+		- packages/amphp-pool/src
+		- packages/amphp-engine/src
+		- packages/amphp-logger/src
+		- packages/amphp-web-server/src
+		- packages/application/src
+		- packages/async-contracts/src
+		- packages/codestyle/src
+		- packages/configuator-toml/src
+		- packages/configurator-ini/src
+		- packages/console/src
+		- packages/design-patterns/src
+		- packages/di/src
+		- packages/events/src
+		- packages/monolog/src
+		- packages/os-utilities/src
+		- packages/package-installer/src
+		- packages/php-open-telemetry/src
+		- packages/protocol-contracts/src
+		- packages/rest-api/src
+		- packages/service-manager/src
+		- packages/swoole-engine/src
+		- packages/type-definitions/src
+		- packages/user-manager/src
 	tips:
 		treatPhpDocTypesAsCertain: false
 	ignoreErrors:

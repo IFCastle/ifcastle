@@ -1,4 +1,4 @@
-name: Split Monorepo
+name: Validate and Publish
 
 on:
   push:
@@ -8,13 +8,41 @@ on:
       - '*'
 
 concurrency:
-  group: split-${{ github.ref }}
+  group: validate-publish-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  split:
+  validate:
     runs-on: ubuntu-latest
-    name: Split ${{ matrix.package.name }}
+    name: Run Tests
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, json
+          coverage: none
+      
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+      
+      - name: Run PHPUnit tests
+        run: composer test
+
+  split:
+    needs: validate
+    runs-on: ubuntu-latest
+    name: Split ${{ matrix.package }}
 
     strategy:
       fail-fast: false
