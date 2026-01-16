@@ -10,6 +10,9 @@ use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Traversable;
 
+/**
+ * @implements ConcurrentIteratorInterface<mixed>
+ */
 final class ConcurrentChannelIterator implements ConcurrentIteratorInterface
 {
     private mixed $value;

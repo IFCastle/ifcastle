@@ -21,13 +21,13 @@ final class Awaiter
      * @template Tk of array-key
      * @template Tv
      *
-     * @param positive-int                      $futuresAwaitCount
+     * @param int                               $futuresAwaitCount
      * @param iterable<Tk, FutureInterface<Tv>> $futures
      * @param CancellationInterface|null        $cancellation      Optional cancellation.
      * @param bool                              $shouldIgnoreError Whether to ignore errors.
      *
-     * @return array{array<Tk, \Throwable>, array<Tk, Tv>} The first array contains the errors, the second array
-     *                         contains the results.
+     * @return array{array<Tk, \Throwable>, array<Tk, Tv>}|array{} The first array contains the errors, the second
+     *                         array contains the results.
      * @throws UnexpectedValue
      */
     public static function await(int                    $futuresAwaitCount,

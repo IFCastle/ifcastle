@@ -10,6 +10,9 @@ use IfCastle\Async\QueueInterface;
 use IfCastle\Swoole\Internal\FutureState;
 use Swoole\Coroutine\Channel;
 
+/**
+ * @implements QueueInterface<mixed>
+ */
 final class Queue implements QueueInterface
 {
     private readonly Channel $channel;
@@ -32,12 +35,19 @@ final class Queue implements QueueInterface
 
 
     #[\Override]
+    /**
+     * @param mixed $value
+     */
     public function pushAsync(mixed $value): void
     {
         $this->channel->push($value);
     }
 
     #[\Override]
+    /**
+     * @param mixed $value
+     * @return FutureInterface<mixed>
+     */
     public function pushWithPromise(mixed $value): FutureInterface
     {
         $this->channel->push($value);
@@ -45,12 +55,18 @@ final class Queue implements QueueInterface
     }
 
     #[\Override]
+    /**
+     * @param mixed $value
+     */
     public function push(mixed $value): void
     {
         $this->channel->push($value);
     }
 
     #[\Override]
+    /**
+     * @return ConcurrentIteratorInterface<mixed>
+     */
     public function getIterator(): ConcurrentIteratorInterface
     {
         return new ConcurrentChannelIterator($this->channel);

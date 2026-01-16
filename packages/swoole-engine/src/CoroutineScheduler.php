@@ -8,6 +8,7 @@ use IfCastle\Async\CancellationInterface;
 use IfCastle\Async\CoroutineInterface;
 use IfCastle\Async\CoroutineSchedulerInterface;
 use IfCastle\Async\DeferredCancellationInterface;
+use IfCastle\Async\FutureInterface;
 use IfCastle\Async\QueueInterface;
 use IfCastle\DI\DisposableInterface;
 use IfCastle\Exceptions\LogicalException;
@@ -39,7 +40,7 @@ class CoroutineScheduler implements CoroutineSchedulerInterface, DisposableInter
     }
 
     /**
-     * @param iterable<int|string, FutureInterface> $futures
+     * @param iterable<int|string, FutureInterface<mixed>> $futures
      * @throws LogicalException
      * @throws UnexpectedValue
      * @throws \Throwable
@@ -53,7 +54,7 @@ class CoroutineScheduler implements CoroutineSchedulerInterface, DisposableInter
     }
 
     /**
-     * @param iterable<int|string, FutureInterface> $futures
+     * @param iterable<int|string, FutureInterface<mixed>> $futures
      */
     #[\Override]
     public function awaitFirstSuccessful(iterable $futures, ?CancellationInterface $cancellation = null): mixed
@@ -64,7 +65,7 @@ class CoroutineScheduler implements CoroutineSchedulerInterface, DisposableInter
     }
 
     /**
-     * @param iterable<int|string, FutureInterface> $futures
+     * @param iterable<int|string, FutureInterface<mixed>> $futures
      * @return array<mixed>
      * @throws UnexpectedValue
      * @throws LogicalException

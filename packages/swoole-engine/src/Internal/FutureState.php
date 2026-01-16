@@ -15,6 +15,9 @@ use Swoole\Coroutine;
  */
 final class FutureState
 {
+    /**
+     * @return self<T>
+     */
     public static function completed(): self
     {
         $state                      = new self();
@@ -27,7 +30,7 @@ final class FutureState
     private bool $handled = false;
 
     /**
-     * @var array<string, \Closure(self): void>
+     * @var array<string, \Closure(self<T>): void>
      */
     private array $callbacks = [];
 

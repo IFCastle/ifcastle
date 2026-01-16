@@ -45,10 +45,6 @@ final class AsyncStack implements StackInterface
             $this->iterator->continue(new TimeoutCancellation($this->waitTimeout));
             --$this->size;
 
-            if ($this->size < 0) {
-                $this->size         = 0;
-            }
-
             return $this->iterator->getValue();
         } catch (TimeoutException) {
             return null;

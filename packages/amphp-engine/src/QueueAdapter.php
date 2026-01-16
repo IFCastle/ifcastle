@@ -12,6 +12,7 @@ use IfCastle\Async\QueueInterface;
 
 /**
  * @template T
+ * @implements QueueInterface<T>
  */
 final readonly class QueueAdapter implements QueueInterface
 {
@@ -49,24 +50,37 @@ final readonly class QueueAdapter implements QueueInterface
     }
 
     #[\Override]
+    /**
+     * @param T $value
+     */
     public function pushAsync(mixed $value, ?CancellationInterface $cancellation = null): void
     {
         $this->queue->pushAsync($value)->ignore();
     }
 
     #[\Override]
+    /**
+     * @param T $value
+     * @return FutureInterface<T>
+     */
     public function pushWithPromise(mixed $value, ?CancellationInterface $cancellation = null): FutureInterface
     {
         return new FutureAdapter($this->queue->pushAsync($value));
     }
 
     #[\Override]
+    /**
+     * @param T $value
+     */
     public function push(mixed $value): void
     {
         $this->queue->push($value);
     }
 
     #[\Override]
+    /**
+     * @return ConcurrentIteratorInterface<T>
+     */
     public function getIterator(): ConcurrentIteratorInterface
     {
         return new ConcurrentIteratorAdapter($this->queue->iterate());

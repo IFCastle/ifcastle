@@ -9,8 +9,15 @@ use IfCastle\Async\FutureInterface;
 use IfCastle\Swoole\Internal\FutureState;
 use Swoole\Coroutine\Channel;
 
+/**
+ * @template T
+ * @implements FutureInterface<T>
+ */
 final readonly class Future implements FutureInterface
 {
+    /**
+     * @param FutureState<T> $state
+     */
     public function __construct(public FutureState $state) {}
 
     #[\Override]
@@ -29,6 +36,9 @@ final readonly class Future implements FutureInterface
      * @throws \Throwable
      */
     #[\Override]
+    /**
+     * @return T
+     */
     public function await(?CancellationInterface $cancellation = null): mixed
     {
         $channel                    = new Channel(1);
@@ -57,6 +67,11 @@ final readonly class Future implements FutureInterface
     }
 
     #[\Override]
+    /**
+     * @template TReturn
+     * @param callable(T): TReturn $mapper
+     * @return FutureInterface<TReturn>
+     */
     public function map(callable $mapper): FutureInterface
     {
         $futureState                = new FutureState();

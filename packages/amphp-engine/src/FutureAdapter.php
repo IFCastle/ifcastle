@@ -10,6 +10,7 @@ use IfCastle\Async\FutureInterface;
 
 /**
  * @template T
+ * @implements FutureInterface<T>
  */
 final readonly class FutureAdapter implements FutureInterface
 {
@@ -32,12 +33,20 @@ final readonly class FutureAdapter implements FutureInterface
     }
 
     #[\Override]
+    /**
+     * @return T
+     */
     public function await(?CancellationInterface $cancellation = null): mixed
     {
         return $this->future->await();
     }
 
     #[\Override]
+    /**
+     * @template TReturn
+     * @param callable(T): TReturn $mapper
+     * @return FutureInterface<TReturn>
+     */
     public function map(callable $mapper): FutureInterface
     {
         return new FutureAdapter($this->future->map($mapper));
