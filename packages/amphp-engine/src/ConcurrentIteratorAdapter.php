@@ -11,6 +11,7 @@ use Traversable;
 
 /**
  * @template T
+ * @implements ConcurrentIteratorInterface<T>
  */
 final readonly class ConcurrentIteratorAdapter implements ConcurrentIteratorInterface
 {

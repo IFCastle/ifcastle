@@ -10,6 +10,9 @@ use Amp\TimeoutCancellation;
 use Amp\TimeoutException;
 use IfCastle\DesignPatterns\Pool\StackInterface;
 
+/**
+ * @implements StackInterface<object>
+ */
 final class AsyncStack implements StackInterface
 {
     /**

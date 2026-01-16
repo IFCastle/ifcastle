@@ -8,12 +8,13 @@ use Amp\Sync\Channel;
 use IfCastle\Async\ChannelInterface;
 
 /**
- * @template T
+ * @template TReceive
+ * @template TSend
  */
 final readonly class ChannelAdapter implements ChannelInterface
 {
     /**
-     * @param Channel<T> $channel
+     * @param Channel<TReceive, TSend> $channel
      */
     public function __construct(public Channel $channel) {}
 

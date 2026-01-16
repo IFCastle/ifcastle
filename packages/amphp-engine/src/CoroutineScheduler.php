@@ -53,7 +53,7 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
 
     #[\Override]
     /**
-     * @param iterable<FutureInterface> $futures
+     * @param iterable<int|string, FutureInterface> $futures
      */
     public function awaitFirst(iterable $futures, ?CancellationInterface $cancellation = null): mixed
     {
@@ -62,7 +62,7 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
 
     #[\Override]
     /**
-     * @param iterable<FutureInterface> $futures
+     * @param iterable<int|string, FutureInterface> $futures
      */
     public function awaitFirstSuccessful(iterable $futures, ?CancellationInterface $cancellation = null
     ): mixed {
