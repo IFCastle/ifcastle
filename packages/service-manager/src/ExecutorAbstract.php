@@ -39,7 +39,7 @@ abstract class ExecutorAbstract implements ExecutorInterface
     protected TaskRunnerInterface|null $taskRunner = null;
 
     /**
-     * @var InterceptorInterface[]
+     * @var InterceptorInterface<mixed>[]
      */
     protected array $interceptors = [];
 

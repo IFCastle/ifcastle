@@ -11,7 +11,7 @@ class ExternalEvent extends BaseEvent implements ExternalEventInterface
     #[\Override]
     public static function fromArray(array $array, ?ArraySerializableValidatorInterface $validator = null): static
     {
-        return new self(
+        return new static(
             $array[self::EVENT_NAME] ?? '',
             $array[self::EVENT_PRODUCER] ?? null,
             $array[self::EVENT_TOPICS] ?? [],

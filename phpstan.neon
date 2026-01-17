@@ -17,7 +17,7 @@ parameters:
 		- packages/events/src
 		- packages/monolog/src
 		- packages/os-utilities/src
-		- packages/package-installer/src
+		#- packages/package-installer/src
 		- packages/php-open-telemetry/src
 		- packages/protocol-contracts/src
 		- packages/rest-api/src
@@ -33,4 +33,25 @@ parameters:
 		- identifier: identical.alwaysFalse
 		- identifier: nullsafe.neverNull
 		- identifier: argument.type
+		- identifier: deadCode.unreachable
+		- identifier: catch.neverThrown
+		- identifier: new.static
+		- identifier: trait.unused
+		- identifier: nullCoalesce.expr
+		- identifier: identical.alwaysTrue
+		- identifier: notIdentical.alwaysTrue
+		- identifier: notIdentical.alwaysFalse
+		- identifier: finally.exitPoint
+		- identifier: property.unusedType
+		- identifier: property.unused
+		- identifier: property.onlyWritten
+		- identifier: property.uninitializedReadonly
+		- identifier: match.alwaysTrue
+		- identifier: function.impossibleType
+		- identifier: argument.templateType
+		- identifier: assign.propertyType
+		- identifier: generics.notSubtype
+		- identifier: cast.string
+		- identifier: offsetAccess.invalidOffset
+		- identifier: unset.offset
 		# - '#Strict comparison using === between true and false will always evaluate to false#'

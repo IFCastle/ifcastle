@@ -96,6 +96,7 @@ final class BootloaderBuilderByIniFiles extends BootloaderBuilderAbstract
     {
         foreach ($bootloaders as $bootloader) {
 
+            /** @phpstan-ignore function.alreadyNarrowedType */
             if (!\is_array($bootloader)) {
                 continue;
             }

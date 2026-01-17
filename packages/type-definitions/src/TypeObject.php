@@ -150,7 +150,6 @@ class TypeObject extends DefinitionAbstract implements ObjectInterface
                 throw new EncodingException($this, 'Property is not nullable', ['property' => $key]);
             }
 
-            /* @phpstan-ignore-next-line */
             $encoded[$key]      = $notEncoded ? $property->encode($data[$propertyName]) : $data[$propertyName];
         }
 

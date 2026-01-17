@@ -65,7 +65,7 @@ class ProgressByItemEvent extends ProgressPercentageEvent implements ProgressIte
     #[\Override]
     public static function fromArray(array $array, ?ArraySerializableValidatorInterface $validator = null): static
     {
-        return new self($array[self::ITEM_CURRENT] ?? 0, $array[self::ITEM_TOTAL] ?? 0, $array[self::ITEM_NAME] ?? '')
+        return (new static($array[self::ITEM_CURRENT] ?? 0, $array[self::ITEM_TOTAL] ?? 0, $array[self::ITEM_NAME] ?? ''))
             ->constructFromArray($array);
     }
 }

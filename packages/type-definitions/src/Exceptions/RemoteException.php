@@ -35,6 +35,16 @@ final class RemoteException extends BaseException implements ContainerSerializab
     }
 
     /**
+     * Serialize a Throwable to an array for remote transport.
+     *
+     * @return array<string, mixed>
+     */
+    public static function toArrayForRemote(\Throwable $throwable): array
+    {
+        return (new self($throwable))->toArray();
+    }
+
+    /**
      * RemoteException constructor.
      *
      * This constructor has two use cases:

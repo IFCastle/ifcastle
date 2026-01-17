@@ -20,10 +20,11 @@ class EventDispatcher implements EventDispatcherInterface
      * @throws UnexpectedValueType
      */
     #[\Override]
-    public function dispatch(object $event): void
+    public function dispatch(object $event): object
     {
         if ($event instanceof EventInterface) {
             $this->dispatchEvent($event);
+            return $event;
         }
 
         throw new UnexpectedValueType('$event', $event, EventInterface::class);

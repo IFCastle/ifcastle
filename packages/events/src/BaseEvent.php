@@ -37,7 +37,7 @@ class BaseEvent implements EventInterface, ArraySerializableInterface
     #[\Override]
     public static function fromArray(array $array, ?ArraySerializableValidatorInterface $validator = null): static
     {
-        return new self(
+        return new static(
             $array[self::EVENT_NAME] ?? '',
             $array[self::EVENT_TIMESTAMP] ?? 0
         );

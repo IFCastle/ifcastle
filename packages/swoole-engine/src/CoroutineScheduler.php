@@ -178,6 +178,7 @@ class CoroutineScheduler implements CoroutineSchedulerInterface, DisposableInter
     public function stopAllCoroutines(?\Throwable $exception = null): bool
     {
         // TODO: Implement stopAllCoroutines() method.
+        return false;
     }
 
     #[\Override]

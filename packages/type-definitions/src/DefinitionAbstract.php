@@ -410,8 +410,8 @@ abstract class DefinitionAbstract implements DefinitionMutableInterface
     #[\Override]
     public static function fromArray(array $array, ?ArraySerializableValidatorInterface $validator = null): static
     {
-        /* @phpstan-ignore-next-line */
         // TODO fromArray
+        throw new \RuntimeException('Not implemented');
     }
 
     #[\Override]

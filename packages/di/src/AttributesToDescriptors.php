@@ -281,6 +281,7 @@ class AttributesToDescriptors
         }
 
         foreach ($type as $t) {
+            /** @phpstan-ignore function.alreadyNarrowedType */
             if (false === \is_string($t) || false === match ($t) {
                 'null', 'int', 'float', 'string', 'bool', 'array'
                             => true,

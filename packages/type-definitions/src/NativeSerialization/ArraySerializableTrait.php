@@ -11,7 +11,7 @@ use IfCastle\Exceptions\UnSerializeException;
 trait ArraySerializableTrait
 {
     /**
-     * @param <string|int|null, mixed>                 $array
+     * @param array<string|int|null, mixed> $array
      *
      * @return array<mixed>
      * @throws RecursionLimitExceeded

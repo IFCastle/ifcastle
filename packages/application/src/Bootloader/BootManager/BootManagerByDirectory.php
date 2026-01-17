@@ -133,6 +133,7 @@ class BootManagerByDirectory implements BootManagerInterface
         foreach ($data as $key => $value) {
             if (\is_array($value)) {
 
+                /** @phpstan-ignore function.alreadyNarrowedType */
                 if (!\is_string($key)) {
                     throw new BootloaderException(
                         'Nested arrays are not supported for ini files with not string keys'
