@@ -13,22 +13,23 @@ class BootManagerByDirectoryTest extends TestCase
     #[\Override]
     protected function setUp(): void
     {
-        $this->bootloaderDir        = __DIR__ . '/bootloader';
+        $this->bootloaderDir        = \sys_get_temp_dir() . '/ifcastle-bootloader-' . \uniqid();
+        \mkdir($this->bootloaderDir);
+    }
 
-        if (\is_dir($this->bootloaderDir)) {
-            // remove all files
-            $files = \glob($this->bootloaderDir . '/*');
+    #[\Override]
+    protected function tearDown(): void
+    {
+        // remove all files
+        $files = \glob($this->bootloaderDir . '/*');
 
-            foreach ($files as $file) {
-                if (\is_file($file)) {
-                    \unlink($file);
-                }
+        foreach ($files as $file) {
+            if (\is_file($file)) {
+                \unlink($file);
             }
         }
 
-        if (!\is_dir($this->bootloaderDir)) {
-            \mkdir($this->bootloaderDir);
-        }
+        \rmdir($this->bootloaderDir);
     }
 
     public function testAddBootloader(): void
