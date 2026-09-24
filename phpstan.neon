@@ -2,10 +2,8 @@ parameters:
 	level: 6
 	tmpDir: .phpstan.cache
 	paths:
-		- packages/amphp-pool/src
 		- packages/amphp-engine/src
 		- packages/amphp-logger/src
-		- packages/amphp-web-server/src
 		- packages/application/src
 		- packages/async-contracts/src
 		- packages/codestyle/src
@@ -22,7 +20,6 @@ parameters:
 		- packages/protocol-contracts/src
 		- packages/rest-api/src
 		- packages/service-manager/src
-		- packages/swoole-engine/src
 		- packages/type-definitions/src
 		- packages/user-manager/src
 	tips:

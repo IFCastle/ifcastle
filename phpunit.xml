@@ -4,9 +4,6 @@
     <testsuite name="amphp-engine">
       <directory>packages/amphp-engine/tests</directory>
     </testsuite>
-    <testsuite name="amphp-pool">
-      <directory>packages/amphp-pool/tests</directory>
-    </testsuite>
     <testsuite name="application">
       <directory>packages/application/tests</directory>
     </testsuite>

@@ -15,7 +15,6 @@
     ],
     "require": {
         "php": ">=8.5",
-        "ifcastle/amphp-pool": "*",
         "ifcastle/application": "*",
         "ifcastle/async-contracts": "*",
         "ifcastle/configurator-toml": "*",
@@ -26,11 +25,9 @@
         "ifcastle/events": "*",
         "ifcastle/amphp-engine": "*",
         "ifcastle/amphp-logger": "*",
-        "ifcastle/amphp-web-server": "*",
         "ifcastle/codestyle": "*",
         "ifcastle/monolog": "*",
         "ifcastle/package-installer": "*",
-        "ifcastle/swoole-engine": "*",
         "ifcastle/os-utilities": "*",
         "ifcastle/open-telemetry": "*",
         "ifcastle/protocol-contracts": "*",
@@ -46,10 +43,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "IfCastle\\AmpPool\\": "packages/amphp-pool/tests/",
             "IfCastle\\Amphp\\": "packages/amphp-engine/tests/",
             "IfCastle\\Amphp\\Logger\\": "packages/amphp-logger/tests/",
-            "IfCastle\\AmphpWebServer\\": "packages/amphp-web-server/tests/",
             "IfCastle\\Application\\": "packages/application/tests/",
             "IfCastle\\CodeStyle\\": "packages/codestyle/tests/",
             "IfCastle\\Configurator\\Toml\\": "packages/configuator-toml/tests/",
@@ -65,11 +60,9 @@
             "IfCastle\\RestApi\\": "packages/rest-api/tests/",
             "IfCastle\\ServiceManager\\": "packages/service-manager/tests/",
             "IfCastle\\Services\\": "packages/user-manager/tests/",
-            "IfCastle\\Swoole\\": "packages/swoole-engine/tests/",
             "IfCastle\\TypeDefinitions\\": "packages/type-definitions/tests/",
             "Examples\\": [
                 "packages/design-patterns/examples/",
-                "packages/amphp-pool/examples/",
                 "packages/service-manager/examples/",
                 "packages/type-definitions/examples/"
             ]
