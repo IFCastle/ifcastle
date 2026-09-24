@@ -20,6 +20,7 @@ parameters:
 		- packages/protocol-contracts/src
 		- packages/rest-api/src
 		- packages/service-manager/src
+		- packages/trueasync-engine/src
 		- packages/type-definitions/src
 		- packages/user-manager/src
 	tips:

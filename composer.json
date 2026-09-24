@@ -25,6 +25,7 @@
         "ifcastle/events": "*",
         "ifcastle/amphp-engine": "*",
         "ifcastle/amphp-logger": "*",
+        "ifcastle/trueasync-engine": "*",
         "ifcastle/codestyle": "*",
         "ifcastle/monolog": "*",
         "ifcastle/package-installer": "*",
@@ -61,6 +62,7 @@
             "IfCastle\\ServiceManager\\": "packages/service-manager/tests/",
             "IfCastle\\Services\\": "packages/user-manager/tests/",
             "IfCastle\\TypeDefinitions\\": "packages/type-definitions/tests/",
+            "IfCastle\\TrueAsync\\": "packages/trueasync-engine/tests/",
             "Examples\\": [
                 "packages/design-patterns/examples/",
                 "packages/service-manager/examples/",

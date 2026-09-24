@@ -31,6 +31,9 @@
     <testsuite name="service-manager">
       <directory>packages/service-manager/tests</directory>
     </testsuite>
+    <testsuite name="trueasync-engine">
+      <directory>packages/trueasync-engine/tests</directory>
+    </testsuite>
     <testsuite name="type-definitions">
       <directory>packages/type-definitions/tests</directory>
     </testsuite>
