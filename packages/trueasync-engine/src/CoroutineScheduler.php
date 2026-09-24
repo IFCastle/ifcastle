@@ -33,8 +33,8 @@ use function Async\spawn;
  *
  * An error thrown by a callback is logged and ends only that callback; an interval keeps ticking.
  *
- * The await*, channel, queue and cancellation members throw UnsupportedOperation: code uses
- * Async\* directly for those (dev/design/trueasync-engine.md).
+ * The await*, channel, queue and cancellation members throw UnsupportedOperation: they mirror the
+ * AMPHP API, nothing in IfCastle calls them, and code that needs them uses Async\* directly.
  */
 final class CoroutineScheduler implements CoroutineSchedulerInterface
 {
@@ -75,11 +75,10 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     {
         // coroutine_context() starts the scheduler if needed, so current_coroutine() cannot fail after it.
         $link                       = new ParentLink(coroutine_context(), current_coroutine()->getId());
-        $errorReporter              = $this->errorReporter;
 
-        $coroutine                  = spawn(static function () use ($function, $link, $errorReporter): void {
+        $coroutine                  = spawn(function () use ($function, $link): void {
             coroutine_context()->set(ParentLink::key(), $link);
-            $errorReporter->call($function);
+            $this->errorReporter->call($function);
         });
 
         $id                         = $coroutine->getId();
@@ -94,10 +93,8 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     #[\Override]
     public function defer(callable $callback): void
     {
-        $errorReporter              = $this->errorReporter;
-
-        $this->startTimer(static function () use ($callback, $errorReporter): void {
-            $errorReporter->call($callback);
+        $this->startTimer(function () use ($callback): void {
+            $this->errorReporter->call($callback);
         });
     }
 
@@ -110,11 +107,10 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     public function delay(float|int $delay, callable $callback): int
     {
         $milliseconds               = \max(0, self::toMilliseconds($delay));
-        $errorReporter              = $this->errorReporter;
 
-        return $this->startTimer(static function () use ($milliseconds, $callback, $errorReporter): void {
+        return $this->startTimer(function () use ($milliseconds, $callback): void {
             delay($milliseconds);
-            $errorReporter->call($callback);
+            $this->errorReporter->call($callback);
         });
     }
 
@@ -136,13 +132,11 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
             throw new UnexpectedValue('$interval', $interval, 'at least 0.001 seconds');
         }
 
-        $errorReporter              = $this->errorReporter;
-
-        return $this->startTimer(static function () use ($milliseconds, $callback, $errorReporter): void {
+        return $this->startTimer(function () use ($milliseconds, $callback): void {
             // cancelInterval() and stopAllCoroutines() end the loop: the cancellation is thrown from delay().
             while (false === current_coroutine()->isCancellationRequested()) {
                 delay($milliseconds);
-                $errorReporter->call($callback);
+                $this->errorReporter->call($callback);
             }
         });
     }

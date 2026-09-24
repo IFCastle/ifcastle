@@ -162,24 +162,71 @@ class CoroutineSchedulerTest extends TestCase
         $call(new CoroutineScheduler());
     }
 
-    public function testStaleTimerIdDoesNotCancelOtherCoroutines(): void
+    public function testFinishedTimerIdDoesNotCancelLaterTimers(): void
     {
         $scheduler                  = new CoroutineScheduler();
-        $timerId                    = $scheduler->delay(0, static fn() => null);
+        $staleId                    = $scheduler->delay(0, static fn() => null);
         delay(5);
 
-        $survivors                  = [];
+        $fired                      = 0;
 
         for ($i = 0; $i < 20; $i++) {
-            $survivors[]            = $scheduler->run(static fn() => delay(20));
+            $scheduler->delay(0.01, static function () use (&$fired): void {
+                $fired++;
+            });
         }
 
-        $scheduler->cancelInterval($timerId);
+        $scheduler->cancelInterval($staleId);
+        delay(40);
 
-        foreach ($survivors as $coroutine) {
-            Support::waitUntilFinished($coroutine);
-            $this->assertFalse($coroutine->isCancelled());
-        }
+        $this->assertSame(20, $fired);
+    }
+
+    public function testCancelIntervalCancelsDelayBeforeItFires(): void
+    {
+        $scheduler                  = new CoroutineScheduler();
+        $fired                      = false;
+
+        $id                         = $scheduler->delay(0.01, static function () use (&$fired): void {
+            $fired                  = true;
+        });
+
+        $scheduler->cancelInterval($id);
+        delay(30);
+
+        $this->assertFalse($fired);
+    }
+
+    public function testDeferRunsTheCallback(): void
+    {
+        $scheduler                  = new CoroutineScheduler();
+        $called                     = false;
+
+        $scheduler->defer(static function () use (&$called): void {
+            $called                 = true;
+        });
+
+        $this->assertFalse($called);
+        delay(5);
+        $this->assertTrue($called);
+    }
+
+    public function testStopAllCoroutinesCancelsTimers(): void
+    {
+        $scheduler                  = new CoroutineScheduler();
+        $fired                      = false;
+
+        $scheduler->delay(0.01, static function () use (&$fired): void {
+            $fired                  = true;
+        });
+        $scheduler->interval(0.005, static function () use (&$fired): void {
+            $fired                  = true;
+        });
+
+        $scheduler->stopAllCoroutines();
+        delay(30);
+
+        $this->assertFalse($fired);
     }
 
     public function testIntervalKeepsTickingAfterCallbackError(): void

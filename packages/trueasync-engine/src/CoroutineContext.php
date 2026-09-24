@@ -23,6 +23,9 @@ use function Async\current_coroutine;
  * context of the current Scope and its parents, which under TrueAsync\HttpServer includes the
  * request. Coroutines started with Async\spawn() directly have no ancestors and see their own
  * values and the Scope context only.
+ *
+ * Every method except isCoroutine() and getCoroutineId() starts the TrueAsync scheduler if it has
+ * not started yet.
  */
 final readonly class CoroutineContext implements CoroutineContextInterface
 {
@@ -61,19 +64,13 @@ final readonly class CoroutineContext implements CoroutineContextInterface
     #[\Override]
     public function getCoroutineParentId(): int
     {
-        return $this->findParentLink(coroutine_context())?->coroutineId ?? -1;
+        return $this->findParentLink(coroutine_context())->coroutineId ?? -1;
     }
 
     #[\Override]
     public function has(string $key): bool
     {
-        for ($context = coroutine_context(); $context !== null; $context = $this->findParentLink($context)?->context) {
-            if ($context->hasLocal($key)) {
-                return true;
-            }
-        }
-
-        return current_context()->has($key);
+        return $this->findOwner($key) !== null || current_context()->has($key);
     }
 
     /**
@@ -82,13 +79,9 @@ final readonly class CoroutineContext implements CoroutineContextInterface
     #[\Override]
     public function get(string $key): mixed
     {
-        for ($context = coroutine_context(); $context !== null; $context = $this->findParentLink($context)?->context) {
-            if ($context->hasLocal($key)) {
-                return $context->getLocal($key);
-            }
-        }
+        $owner                      = $this->findOwner($key);
 
-        return current_context()->find($key);
+        return $owner !== null ? $owner->getLocal($key) : current_context()->find($key);
     }
 
     #[\Override]
@@ -134,6 +127,20 @@ final readonly class CoroutineContext implements CoroutineContextInterface
         } catch (AsyncException) {
             return -1;
         }
+    }
+
+    /**
+     * The context of the nearest coroutine in the run() chain that holds the key.
+     */
+    private function findOwner(string $key): ?Context
+    {
+        for ($context = coroutine_context(); $context !== null; $context = $this->findParentLink($context)?->context) {
+            if ($context->hasLocal($key)) {
+                return $context;
+            }
+        }
+
+        return null;
     }
 
     private function findParentLink(Context $context): ?ParentLink

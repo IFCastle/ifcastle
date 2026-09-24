@@ -39,6 +39,9 @@ final readonly class ErrorReporter
         }
     }
 
+    /**
+     * Logs the error; never throws.
+     */
     public function report(\Throwable $throwable): void
     {
         if ($this->logger === null) {

@@ -14,7 +14,8 @@
         { "type": "path", "url": "./packages/*", "options": { "symlink": true } }
     ],
     "require": {
-        "php": ">=8.5",
+        "php": ">=8.6",
+        "ext-true_async": "*",
         "ifcastle/application": "*",
         "ifcastle/async-contracts": "*",
         "ifcastle/configurator-toml": "*",

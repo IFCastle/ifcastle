@@ -25,7 +25,7 @@ final class Bootloader implements BootloaderInterface
         }
 
         $builder->bindConstructible(EngineInterface::class, TrueAsyncEngine::class, isThrow: false)
-                ->bindConstructible(CoroutineContextInterface::class, CoroutineContext::class, isThrow: false)
-                ->bindConstructible(CoroutineSchedulerInterface::class, CoroutineScheduler::class, isThrow: false);
+                ->bindConstructible(CoroutineContextInterface::class, CoroutineContext::class)
+                ->bindConstructible(CoroutineSchedulerInterface::class, CoroutineScheduler::class);
     }
 }

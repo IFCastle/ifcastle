@@ -58,6 +58,10 @@ final readonly class CoroutineAdapter implements CoroutineInterface
         return true;
     }
 
+    /**
+     * Returns the throwable itself when TrueAsync can cancel with it, otherwise a new
+     * CancelledException with the throwable, if any, as the previous exception.
+     */
     public static function toCancellation(?\Throwable $throwable): AsyncCancellation
     {
         if ($throwable instanceof AsyncCancellation) {
