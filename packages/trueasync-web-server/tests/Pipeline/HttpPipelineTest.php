@@ -88,6 +88,20 @@ class HttpPipelineTest extends TestCase
         $this->assertSame([], $this->pipeline->logRecords());
     }
 
+    public function testInvalidHostAnswers400(): void
+    {
+        // The server passes these Host values through; the URI they form is invalid.
+        foreach (['a:99999', 'a\\b'] as $host) {
+            $answer                 = $this->pipeline->client->raw(
+                "GET /pipeline/text/x HTTP/1.1\r\nHost: $host\r\nConnection: close\r\n\r\n"
+            );
+
+            $this->assertStringStartsWith('HTTP/1.1 400', $answer, $host);
+        }
+
+        $this->assertSame([], $this->pipeline->logRecords());
+    }
+
     public function testWrongMethodAnswers405(): void
     {
         $response                   = $this->pipeline->request('POST', '/pipeline/echo/abc/0');

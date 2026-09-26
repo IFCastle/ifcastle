@@ -105,20 +105,9 @@ final class PackageInstallerDefault implements PackageInstallerInterface
         }
     }
 
-    /**
-     * A package that had no installer section before this version has no component yet: it is
-     * installed as a new one, main config included.
-     */
     #[\Override]
     public function update(): void
     {
-        try {
-            $this->bootManager->getComponent($this->packageName);
-        } catch (PackageNotFound) {
-            $this->addOrUpdatePackage();
-            return;
-        }
-
         $this->addOrUpdatePackage(true);
     }
 
@@ -129,7 +118,10 @@ final class PackageInstallerDefault implements PackageInstallerInterface
             $this->uninstallServices($this->config[self::SERVICES]);
         }
 
-        $this->bootManager->removeComponent($this->packageName);
+        // A package that declares only services has no bootloader component.
+        if (!empty($this->config[self::PACKAGE])) {
+            $this->bootManager->removeComponent($this->packageName);
+        }
     }
 
     /**
@@ -159,12 +151,24 @@ final class PackageInstallerDefault implements PackageInstallerInterface
     }
 
     /**
+     * On update, a package that had no installer section in its previous version has no component
+     * yet and gets a new one.
+     *
      * @param array<array<string, mixed>> $bootloaderGroups
      */
     private function addOrUpdateBootloaders(array $bootloaderGroups, bool $isUpdate): void
     {
+        $component                  = null;
+
         if ($isUpdate) {
-            $component              = $this->bootManager->getComponent($this->packageName);
+            try {
+                $component          = $this->bootManager->getComponent($this->packageName);
+            } catch (PackageNotFound) {
+                $isUpdate           = false;
+            }
+        }
+
+        if ($component !== null) {
             // Remove all groups
             foreach (\array_keys($component->getGroups()) as $groupId) {
                 $component->deleteGroup($groupId);
@@ -192,11 +196,16 @@ final class PackageInstallerDefault implements PackageInstallerInterface
     }
 
     /**
+     * On update, a service the previous version of the package did not declare is installed.
+     *
      * @param array<array<string, mixed>> $services
      */
     private function addOrUpdateServices(array $services, bool $isUpdate): void
     {
         $serviceManager             = $this->getInstaller()->getServiceManager();
+        $installed                  = $isUpdate
+                                    ? $this->getInstaller()->getServiceCollection()->getServiceCollection(packageName: $this->packageName)
+                                    : [];
 
         foreach ($services as $serviceConfig) {
 
@@ -205,14 +214,14 @@ final class PackageInstallerDefault implements PackageInstallerInterface
             $serviceDescriptor      = new ServiceDescriptor(
                 serviceName  : $serviceName,
                 className    : $serviceConfig[Service::CLASS_NAME]  ?? throw new \RuntimeException("Service class is not found for service $serviceName"),
-                isActive     : $serviceConfig[Service::IS_ACTIVE]   ?? false,
+                isActive     : $serviceConfig[Service::IS_ACTIVE]   ?? true,
                 config       : $serviceConfig[Service::CONFIG]      ?? [],
                 includeTags  : $serviceConfig[Service::TAGS]        ?? [],
                 excludeTags  : $serviceConfig[Service::EXCLUDE_TAGS] ?? [],
                 packageName  : $this->packageName,
             );
 
-            if ($isUpdate) {
+            if (\array_key_exists($serviceName, $installed)) {
                 $serviceManager->updateServiceConfig($serviceDescriptor);
             } else {
                 $serviceManager->installService($serviceDescriptor);

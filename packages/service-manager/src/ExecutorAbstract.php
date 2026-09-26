@@ -125,13 +125,7 @@ abstract class ExecutorAbstract implements ExecutorInterface
             }
 
             if (false === $isParameterExists) {
-
-                if ($parameter->isDefaultValueAvailable()) {
-                    $normalized[$parameterName] = $parameter->getDefaultValue();
-                } elseif ($parameter->isNullable()) {
-                    $normalized[$parameterName] = null;
-                }
-
+                $normalized[$parameterName] = $parameter->getDefaultValue();
                 continue;
             }
 

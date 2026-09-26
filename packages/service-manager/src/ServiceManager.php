@@ -38,7 +38,7 @@ class ServiceManager implements ServiceManagerInterface
     #[\Override]
     public function uninstallService(string $serviceName, string $packageName): void
     {
-        $this->repositoryWriter->removeServiceConfig($serviceName, $packageName);
+        $this->repositoryWriter->removeServiceConfig($packageName, $serviceName);
         $this->repositoryWriter->saveRepository();
     }
 

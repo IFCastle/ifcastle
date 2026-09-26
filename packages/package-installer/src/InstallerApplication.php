@@ -9,6 +9,7 @@ use IfCastle\Application\Bootloader\BootManager\MainConfigAppenderInterface;
 use IfCastle\Application\EngineRolesEnum;
 use IfCastle\Application\Environment\SystemEnvironmentInterface;
 use IfCastle\DI\Exceptions\DependencyNotFound;
+use IfCastle\ServiceManager\RepositoryStorages\ServiceCollectionInterface;
 use IfCastle\ServiceManager\ServiceManagerInterface;
 
 /**
@@ -30,6 +31,14 @@ final class InstallerApplication extends ApplicationAbstract
     public function getServiceManager(): ServiceManagerInterface
     {
         return $this->systemEnvironment->resolveDependency(ServiceManagerInterface::class);
+    }
+
+    /**
+     * @throws DependencyNotFound
+     */
+    public function getServiceCollection(): ServiceCollectionInterface
+    {
+        return $this->systemEnvironment->resolveDependency(ServiceCollectionInterface::class);
     }
 
     /**

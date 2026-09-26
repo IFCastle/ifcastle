@@ -85,6 +85,7 @@ trait ServiceConfigWriterTrait
         array|null  $excludeTags = null,
         string|null $serviceSuffix = null
     ): void {
+        $this->load();
 
         // First, we try to find the service configuration
         $services                   = $this->data[$serviceName] ?? null;

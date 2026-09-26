@@ -163,6 +163,90 @@ class PackageInstallerDefaultTest extends TestCase
         }
     }
 
+    public function testServiceIsActiveByDefault(): void
+    {
+        $this->withProject(function (TemporaryProject $project): void {
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService'])->install();
+
+            $this->assertTrue($this->installedServices($project)['alpha']['isActive'] ?? null);
+        });
+    }
+
+    public function testUpdateRewritesAnInstalledService(): void
+    {
+        $this->withProject(function (TemporaryProject $project): void {
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService'])->install();
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaServiceV2'])->update();
+
+            $this->assertSame('AlphaServiceV2', $this->installedServices($project)['alpha']['class'] ?? null);
+        });
+    }
+
+    public function testUpdateInstallsAServiceTheOldVersionLacked(): void
+    {
+        $this->withProject(function (TemporaryProject $project): void {
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService'])->install();
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService', 'beta' => 'BetaService'])->update();
+
+            $this->assertSame('BetaService', $this->installedServices($project)['beta']['class'] ?? null);
+        });
+    }
+
+    public function testUninstallRemovesServices(): void
+    {
+        $this->withProject(function (TemporaryProject $project): void {
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService'])->install();
+            $this->servicesOnlyInstaller($project, ['alpha' => 'AlphaService'])->uninstall();
+
+            $this->assertArrayNotHasKey('alpha', $this->installedServices($project));
+        });
+    }
+
+    /**
+     * @param callable(TemporaryProject): void $test
+     */
+    private function withProject(callable $test): void
+    {
+        $project                    = new TemporaryProject();
+
+        try {
+            $test($project);
+        } finally {
+            $project->remove();
+        }
+    }
+
+    /**
+     * An installer for a package that declares services and no bootloaders.
+     *
+     * @param array<string, string> $services service name => class
+     */
+    private function servicesOnlyInstaller(TemporaryProject $project, array $services): PackageInstallerDefault
+    {
+        $config                     = [];
+
+        foreach ($services as $name => $class) {
+            $config[]               = [Service::NAME => $name, Service::CLASS_NAME => $class];
+        }
+
+        return new PackageInstallerDefault(
+            new BootManagerByDirectory($project->dir . '/bootloader'),
+            new ZeroContext($project->dir),
+            $this->createStub(DeferredTasksInterface::class)
+        )->setConfig([PackageInstallerInterface::SERVICES => $config], 'test-package');
+    }
+
+    /**
+     * @return array<string, array<string, mixed>> the first configuration of each service in services.ini
+     */
+    private function installedServices(TemporaryProject $project): array
+    {
+        return \array_map(
+            static fn(array $implementations): array => \reset($implementations) ?: [],
+            new ServiceConfig($project->dir)->getServiceCollection()
+        );
+    }
+
     private function instanciateBootManager(): BootManagerInterface
     {
         $bootloaderDir              = __DIR__ . '/bootloader';
