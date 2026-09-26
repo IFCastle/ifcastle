@@ -4,16 +4,6 @@
     "type": "ifcastle-component",
     "license": "MIT",
     "keywords": ["ifcastle", "configurator", "ini"],
-    "extra": {
-        "ifcastle-installer": {
-            "package": {
-                "name": "configurator",
-                "bootloaders": [
-                    "IfCastle\\Configurator\\Configurator"
-                ]
-            }
-        }
-    },
     "autoload": {
         "psr-4": {
             "IfCastle\\Configurator\\": "src/"
