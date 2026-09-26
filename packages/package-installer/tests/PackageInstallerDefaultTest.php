@@ -100,6 +100,30 @@ class PackageInstallerDefaultTest extends TestCase
         $this->assertEquals(['isActive' => true, 'bootloader' => ['testBootloader', 'testBootloader2']], $data['group-0']);
     }
 
+    /**
+     * A package that gains an installer section in a later version reaches the installer through
+     * update(), with no component installed before it.
+     */
+    public function testUpdateInstallsAPackageItDidNotKnow(): void
+    {
+        $packageInstaller           = new PackageInstallerDefault(
+            $this->instanciateBootManager(), new ZeroContext(__DIR__), $this->createMock(DeferredTasksInterface::class)
+        );
+
+        $packageInstaller->setConfig([
+            PackageInstallerInterface::PACKAGE  => [
+                PackageInstallerInterface::NAME => 'testPackage',
+                PackageInstallerInterface::BOOTLOADERS => ['testBootloader'],
+            ],
+        ], 'test-package');
+
+        $packageInstaller->update();
+
+        $data                       = \parse_ini_file(__DIR__ . '/bootloader/testPackage.ini', true, \INI_SCANNER_TYPED);
+
+        $this->assertEquals(['isActive' => true, 'bootloader' => ['testBootloader']], $data['group-0'] ?? null);
+    }
+
     private function instanciateBootManager(): BootManagerInterface
     {
         $bootloaderDir              = __DIR__ . '/bootloader';

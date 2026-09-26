@@ -23,6 +23,21 @@ interface CoroutineContextInterface
     public function set(string $key, mixed $value): static;
 
     /**
+     * A value shared by every coroutine that serves the current request, children included, and
+     * gone with the request. Outside a request, or on an engine that has no request scope, it is
+     * the same as get().
+     */
+    public function getForRequest(string $key): mixed;
+
+    /**
+     * Stores a value for every coroutine that serves the current request; see getForRequest().
+     * Outside a request, or on an engine that has no request scope, it is the same as set().
+     *
+     * @return $this
+     */
+    public function setForRequest(string $key, mixed $value): static;
+
+    /**
      * Call the callback when the coroutine is destroyed.
      *
      *

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IfCastle\PackageInstaller;
 
+use IfCastle\Application\Bootloader\BootManager\Exceptions\PackageNotFound;
 use IfCastle\Application\Bootloader\BootManager\BootManagerInterface;
 use IfCastle\Application\Bootloader\Builder\ZeroContextInterface;
 use IfCastle\Application\EngineRolesEnum;
@@ -100,8 +101,19 @@ final class PackageInstallerDefault implements PackageInstallerInterface
     }
 
     #[\Override]
+    /**
+     * A package that had no installer section before this version has no component yet: it is
+     * installed as a new one, main config included.
+     */
     public function update(): void
     {
+        try {
+            $this->bootManager->getComponent($this->packageName);
+        } catch (PackageNotFound) {
+            $this->addOrUpdatePackage();
+            return;
+        }
+
         $this->addOrUpdatePackage(true);
     }
 

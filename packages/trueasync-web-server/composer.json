@@ -5,6 +5,26 @@
     "license": "MIT",
     "keywords": ["web-server", "ifcastle", "trueasync", "http"],
     "extra": {
+        "ifcastle-installer": {
+            "package": {
+                "name": "trueasync_web_server",
+                "mainConfig": {
+                    "server": {
+                        "comment": "Web server on TrueAsync\\HttpServer: host and port to listen on.",
+                        "config": {
+                            "host": "127.0.0.1",
+                            "port": 9095
+                        }
+                    }
+                },
+                "bootloaders": [
+                    "IfCastle\\TrueAsyncWebServer\\Bootloader"
+                ],
+                "applications": [
+                    "server"
+                ]
+            }
+        },
         "branch-alias": {
             "dev-main": "0.1.x-dev"
         }
@@ -26,6 +46,7 @@
         "ifcastle/application": "^0.8",
         "ifcastle/async-contracts": "^0.5",
         "ifcastle/protocol-contracts": "^0.7",
+        "ifcastle/trueasync-engine": "^0.1",
         "league/uri": "^7.4"
     },
     "require-dev": {

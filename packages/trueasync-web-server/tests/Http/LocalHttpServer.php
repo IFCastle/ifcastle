@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace IfCastle\TrueAsyncWebServer\Http;
 
 use Async\Coroutine;
-use PHPUnit\Framework\Assert;
+use IfCastle\TrueAsyncWebServer\TestHttpClient;
 use TrueAsync\HttpServer;
 use TrueAsync\HttpServerConfig;
 
 use function Async\await;
-use function Async\delay;
 use function Async\spawn;
 
 /**
@@ -19,9 +18,9 @@ use function Async\spawn;
  */
 final class LocalHttpServer
 {
-    private const int START_LIMIT_MS = 2000;
-
     public readonly int $port;
+
+    private readonly TestHttpClient $client;
 
     private readonly HttpServer $server;
 
@@ -32,14 +31,15 @@ final class LocalHttpServer
      */
     public function __construct(\Closure $handler)
     {
-        $this->port                 = self::freePort();
+        $this->port                 = TestHttpClient::freePort();
+        $this->client               = new TestHttpClient($this->port);
         $this->server               = new HttpServer(
             new HttpServerConfig()->addListener('127.0.0.1', $this->port)->setWorkers(1)
         );
 
         $this->server->addHttpHandler($handler);
         $this->coroutine            = spawn($this->server->start(...));
-        $this->waitUntilListening();
+        $this->client->waitUntilListening();
     }
 
     /**
@@ -49,77 +49,20 @@ final class LocalHttpServer
      */
     public function request(string $method, string $path, array $headers = [], string $body = ''): array
     {
-        $headerLines                = '';
-
-        foreach ($headers as $name => $value) {
-            $headerLines           .= $name . ': ' . $value . "\r\n";
-        }
-
-        $context                    = \stream_context_create(['http' => [
-            'method'                => $method,
-            'header'                => $headerLines,
-            'content'               => $body,
-            'ignore_errors'         => true,
-        ]]);
-
-        $responseBody               = \file_get_contents('http://127.0.0.1:' . $this->port . $path, false, $context);
-        $responseHeaders            = \http_get_last_response_headers() ?? [];
-
-        Assert::assertIsString($responseBody, 'The server did not answer ' . $method . ' ' . $path);
-
-        return [
-            'status'                => \array_shift($responseHeaders) ?? '',
-            'headers'               => $responseHeaders,
-            'body'                  => $responseBody,
-        ];
+        return $this->client->request($method, $path, $headers, $body);
     }
 
     /**
-     * Sends $request as written, for request lines the HTTP client cannot produce, and returns
-     * the raw response. $request must ask the server to close the connection.
+     * Sends $request as written; see TestHttpClient::raw().
      */
     public function raw(string $request): string
     {
-        $socket                     = \stream_socket_client('tcp://127.0.0.1:' . $this->port, $code, $message, 2);
-        Assert::assertIsResource($socket, 'No connection: ' . $message);
-
-        \fwrite($socket, $request);
-        $response                   = (string) \stream_get_contents($socket);
-        \fclose($socket);
-
-        return $response;
+        return $this->client->raw($request);
     }
 
     public function stop(): void
     {
         $this->server->stop();
         await($this->coroutine);
-    }
-
-    private static function freePort(): int
-    {
-        $probe                      = \stream_socket_server('tcp://127.0.0.1:0');
-        Assert::assertIsResource($probe, 'No free local port');
-
-        $address                    = (string) \stream_socket_get_name($probe, false);
-        \fclose($probe);
-
-        return (int) \substr($address, (int) \strrpos($address, ':') + 1);
-    }
-
-    private function waitUntilListening(): void
-    {
-        for ($waited = 0; $waited < self::START_LIMIT_MS; $waited += 5) {
-            $connection             = @\stream_socket_client('tcp://127.0.0.1:' . $this->port, timeout: 1);
-
-            if (\is_resource($connection)) {
-                \fclose($connection);
-                return;
-            }
-
-            delay(5);
-        }
-
-        Assert::fail('The server did not start listening within ' . self::START_LIMIT_MS . ' ms');
     }
 }

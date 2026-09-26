@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IfCastle\RestApi\Pipeline;
+namespace IfCastle\TrueAsyncWebServer\Pipeline;
 
 use IfCastle\Application\Bootloader\BootloaderExecutorInterface;
 use IfCastle\Application\Bootloader\BootloaderInterface;
@@ -35,6 +35,7 @@ final class PipelineBootloader implements BootloaderInterface, RepositoryReaderI
 
         $bootloaderExecutor->getBootloaderContext()->getRequestEnvironmentPlan()
                            ->addBeforeHandleHandler($recorder->record(...))
+                           ->addResponseHandler($recorder->breakResponse(...))
                            ->addAfterResponseHandler($recorder->probe(...));
     }
 

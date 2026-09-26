@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use function Async\coroutine_context;
 use function Async\current_context;
 use function Async\current_coroutine;
+use function Async\request_context;
 
 /**
  * Coroutine-local storage with inheritance from the coroutine that started this one.
@@ -100,6 +101,32 @@ final readonly class CoroutineContext implements CoroutineContextInterface
     public function set(string $key, mixed $value): static
     {
         coroutine_context()->set($key, $value, replace: true);
+
+        return $this;
+    }
+
+    /**
+     * Reads the context of the request Scope TrueAsync\HttpServer gives every request: one lookup,
+     * whatever coroutine of the request asks.
+     */
+    #[\Override]
+    public function getForRequest(string $key): mixed
+    {
+        $requestContext             = request_context();
+
+        return $requestContext !== null ? $requestContext->findLocal($key) : $this->get($key);
+    }
+
+    #[\Override]
+    public function setForRequest(string $key, mixed $value): static
+    {
+        $requestContext             = request_context();
+
+        if ($requestContext === null) {
+            $this->set($key, $value);
+        } else {
+            $requestContext->set($key, $value, replace: true);
+        }
 
         return $this;
     }

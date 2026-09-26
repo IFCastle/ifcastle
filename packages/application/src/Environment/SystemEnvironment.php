@@ -65,8 +65,8 @@ class SystemEnvironment extends Environment implements SystemEnvironmentInterfac
             return $this->findDependency(RequestEnvironmentInterface::class);
         }
 
-        // Concurrent requests share this environment, so the current one is kept per coroutine.
-        $reference                  = $coroutineContext->get(RequestEnvironmentInterface::class);
+        // Concurrent requests share this environment, so the current one is kept per request.
+        $reference                  = $coroutineContext->getForRequest(RequestEnvironmentInterface::class);
 
         return $reference instanceof \WeakReference ? $reference->get() : null;
     }
@@ -81,7 +81,7 @@ class SystemEnvironment extends Environment implements SystemEnvironmentInterfac
             // The root holds it, so every environment in the chain finds it: public reads from system.
             $this->rootSystemEnvironment()->set(RequestEnvironmentInterface::class, $reference);
         } else {
-            $coroutineContext->set(RequestEnvironmentInterface::class, $reference);
+            $coroutineContext->setForRequest(RequestEnvironmentInterface::class, $reference);
         }
     }
 

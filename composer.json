@@ -18,7 +18,6 @@
         "ext-true_async": "*",
         "ifcastle/application": "*",
         "ifcastle/async-contracts": "*",
-        "ifcastle/configurator-toml": "*",
         "ifcastle/configurator-ini": "*",
         "ifcastle/console": "*",
         "ifcastle/design-patterns": "*",
@@ -42,7 +41,8 @@
     "require-dev": {
         "phpunit/phpunit": "^12.5",
         "phpstan/phpstan": "^2.1",
-        "rector/rector": "^2.3"
+        "rector/rector": "^2.3",
+        "devium/toml": "^1.0"
     },
     "autoload-dev": {
         "psr-4": {
@@ -50,7 +50,7 @@
             "IfCastle\\Amphp\\Logger\\": "packages/amphp-logger/tests/",
             "IfCastle\\Application\\": "packages/application/tests/",
             "IfCastle\\CodeStyle\\": "packages/codestyle/tests/",
-            "IfCastle\\Configurator\\Toml\\": "packages/configuator-toml/tests/",
+            "IfCastle\\Configurator\\Toml\\": ["packages/configuator-toml/src/", "packages/configuator-toml/tests/"],
             "IfCastle\\Configurator\\": "packages/configurator-ini/tests/",
             "IfCastle\\Console\\": "packages/console/tests/",
             "IfCastle\\DesignPatterns\\": "packages/design-patterns/tests/",

@@ -107,6 +107,24 @@ class CoroutineContext implements CoroutineContextInterface
         return $this;
     }
 
+    /**
+     * No request scope on this engine: the value lives in the coroutine, as get() reads it.
+     */
+    #[\Override]
+    public function getForRequest(string $key): mixed
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * No request scope on this engine: the value lives in the coroutine, as set() stores it.
+     */
+    #[\Override]
+    public function setForRequest(string $key, mixed $value): static
+    {
+        return $this->set($key, $value);
+    }
+
     #[\Override]
     public function defer(callable $callback): static
     {

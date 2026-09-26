@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IfCastle\RestApi\Pipeline;
+namespace IfCastle\TrueAsyncWebServer\Pipeline;
 
 use IfCastle\Application\ApplicationAbstract;
 use IfCastle\Application\EngineRolesEnum;
