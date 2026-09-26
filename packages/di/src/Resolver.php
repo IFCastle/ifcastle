@@ -11,6 +11,14 @@ use IfCastle\DI\Exceptions\MaxResolutionDepthException;
 class Resolver implements ResolverInterface
 {
     /**
+     * Slots of objects under construction that circular dependency proxies wait for, by container and key.
+     * A root resolution fills its slot when the object is built and removes it from this map.
+     *
+     * @var array<string, \stdClass>
+     */
+    private array $cycleSlots       = [];
+
+    /**
      * @param DescriptorInterface[] $dependencies
      * @param array<class-string|string> $resolvingKeys list of classes that are currently being resolved
      *
@@ -115,13 +123,23 @@ class Resolver implements ResolverInterface
             $containerRef           = \WeakReference::create($container);
             $resolverRef            = \WeakReference::create($this);
 
+            // A cycle: the object for $key is under construction up the stack, and its root call fills this slot.
+            $slot                   = \in_array($key, $resolvingKeys, true)
+                                      ? $this->cycleSlots[self::slotKey($container, $key)] ??= new \stdClass()
+                                      : null;
+
             //
             // Use Proxy to avoid circular dependencies.
             // If a circular dependency resolution is detected, we stop the resolution process
             // and return a Proxy object that will later point to the actual dependency.
             //
             return new \ReflectionClass($dependency->getClassName())->newLazyProxy(
-                static function () use ($containerRef, $resolverRef, $dependency, $resolvingKeys, $key) {
+                static function () use ($containerRef, $resolverRef, $dependency, $resolvingKeys, $key, $slot) {
+
+                    // The object the cycle started from: a second instance would split its state.
+                    if (isset($slot->instance)) {
+                        return $slot->instance;
+                    }
 
                     $container      = $containerRef->get();
                     $resolver       = $resolverRef->get();
@@ -144,7 +162,25 @@ class Resolver implements ResolverInterface
             throw new MaxResolutionDepthException(32, $resolvingKeys);
         }
 
-        return $this->instanciateDependency($dependency, $container, $resolvingKeys, $allowLazy);
+        $slotKey                    = self::slotKey($container, $key);
+
+        try {
+            $object                 = $this->instanciateDependency($dependency, $container, $resolvingKeys, $allowLazy);
+        } finally {
+            $slot                   = $this->cycleSlots[$slotKey] ?? null;
+            unset($this->cycleSlots[$slotKey]);
+        }
+
+        if ($slot !== null) {
+            $slot->instance         = $object;
+        }
+
+        return $object;
+    }
+
+    private static function slotKey(ContainerInterface $container, string $key): string
+    {
+        return \spl_object_id($container) . ':' . $key;
     }
 
     /**

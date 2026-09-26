@@ -20,6 +20,19 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 final class FromRegistry extends Dependency implements ProviderInterface
 {
+    /**
+     * True when the attribute names a component; the key of an attribute without one is later
+     * filled with the parameter name, which names no component.
+     */
+    private readonly bool $hasComponentKey;
+
+    public function __construct(string $key = '', mixed ...$dependency)
+    {
+        $this->hasComponentKey      = $key !== '';
+
+        parent::__construct($key, ...$dependency);
+    }
+
     #[\Override]
     public function getProvider(): ProviderInterface
     {
@@ -34,6 +47,17 @@ final class FromRegistry extends Dependency implements ProviderInterface
         array $resolvingKeys = []
     ): mixed {
 
+        $registry                   = $container->findDependency(ComponentRegistryInterface::class);
+
+        if ($registry !== null && $registry instanceof ComponentRegistryInterface === false) {
+            throw new \TypeError('Registry is not an instance of ' . ComponentRegistryInterface::class);
+        }
+
+        // A named component is the only source: a typo must give null, not someone else's config.
+        if ($this->hasComponentKey) {
+            return $registry?->findComponentConfig($this->getDependencyKey());
+        }
+
         if ($forDependency instanceof ConfigurationProviderInterface) {
             $config                 = $forDependency->provideConfiguration();
 
@@ -42,20 +66,10 @@ final class FromRegistry extends Dependency implements ProviderInterface
             }
         }
 
-        $registry                     = $container->findDependency(ComponentRegistryInterface::class);
-
-        if ($registry === null) {
-            return null;
-        }
-
-        if ($registry instanceof ComponentRegistryInterface === false) {
-            throw new \TypeError('Registry is not an instance of ' . ComponentRegistryInterface::class);
-        }
-
         if ($forDependency === null) {
             return null;
         }
 
-        return $registry->findComponentConfig($forDependency->getDependencyName());
+        return $registry?->findComponentConfig($forDependency->getDependencyName());
     }
 }

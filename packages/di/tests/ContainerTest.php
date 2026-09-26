@@ -8,9 +8,12 @@ use IfCastle\DI\Dependencies\CircularDependency1;
 use IfCastle\DI\Dependencies\CircularDependency2;
 use IfCastle\DI\Dependencies\CircularDependencyWrong1;
 use IfCastle\DI\Dependencies\CircularDependencyWrong2;
+use IfCastle\DI\Dependencies\CircularState1;
+use IfCastle\DI\Dependencies\CircularState2;
 use IfCastle\DI\Dependencies\ClassWithDependencyContact;
 use IfCastle\DI\Dependencies\ClassWithLazyDependency;
 use IfCastle\DI\Dependencies\ClassWithNoExistDependency;
+use IfCastle\DI\Dependencies\ClassWithRegistryConfig;
 use IfCastle\DI\Dependencies\CustomDescriptorClass;
 use IfCastle\DI\Dependencies\ObjectWithDependencyContact;
 use IfCastle\DI\Dependencies\UseConstructorClass;
@@ -123,6 +126,38 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(CircularDependency1::class, $dependency2->getDependency1());
     }
 
+    public function testCircularDependencyProxyPointsToTheSharedInstance(): void
+    {
+        $builder                    = new ContainerBuilder();
+        $builder->bindConstructible(CircularState1::class, CircularState1::class)
+                ->bindConstructible(CircularState2::class, CircularState2::class);
+
+        // The proxy holds the container weakly, so the container must outlive it.
+        $container                  = $builder->buildContainer(new Resolver());
+        $one                        = $container->resolveDependency(CircularState1::class);
+        $one->items[]               = 'written through the container instance';
+
+        // $one->two->one is the proxy that broke the cycle; it must forward to $one, not to a copy.
+        $this->assertSame($one->items, $one->two->one->items);
+    }
+
+    public function testCircularDependencyProxyOutlivesItsContainer(): void
+    {
+        $builder                    = new ContainerBuilder();
+        $builder->bindConstructible(CircularState1::class, CircularState1::class)
+                ->bindConstructible(CircularState2::class, CircularState2::class);
+
+        $container                  = $builder->buildContainer(new Resolver());
+        $one                        = $container->resolveDependency(CircularState1::class);
+        $one->items[]               = 'kept after dispose';
+
+        $this->assertInstanceOf(DisposableInterface::class, $container);
+        $container->dispose();
+        unset($container);
+
+        $this->assertSame($one->items, $one->two->one->items);
+    }
+
     public function testCircularDependencyWrong(): void
     {
         $this->expectException(CircularDependencyException::class);
@@ -153,5 +188,38 @@ class ContainerTest extends TestCase
         $dependency                 = $container->resolveDependency(ClassWithDependencyContact::class);
 
         $this->assertInstanceOf(ClassWithDependencyContact::class, $dependency);
+    }
+
+    public function testFromRegistryReadsTheExplicitKeyOrTheDependencyName(): void
+    {
+        $explicit                   = new ConfigMutable(['from' => 'attribute key']);
+        $implicit                   = new ConfigMutable(['from' => 'dependency name']);
+
+        $registry                   = new ComponentRegistryInMemory();
+        $registry->addComponentConfig('explicitComponent', $explicit);
+        $registry->addComponentConfig(ClassWithRegistryConfig::class, $implicit);
+
+        $builder                    = new ContainerBuilder();
+        $builder->bindConstructible(ClassWithRegistryConfig::class, ClassWithRegistryConfig::class);
+        $builder->bindObject(ComponentRegistryInterface::class, $registry);
+
+        $dependency                 = $builder->buildContainer(new Resolver())->resolveDependency(ClassWithRegistryConfig::class);
+
+        $this->assertSame($explicit, $dependency->explicit);
+        $this->assertSame($implicit, $dependency->implicit);
+    }
+
+    public function testFromRegistryWithAnUnknownExplicitKeyGivesNull(): void
+    {
+        $registry                   = new ComponentRegistryInMemory();
+        $registry->addComponentConfig(ClassWithRegistryConfig::class, new ConfigMutable(['from' => 'dependency name']));
+
+        $builder                    = new ContainerBuilder();
+        $builder->bindConstructible(ClassWithRegistryConfig::class, ClassWithRegistryConfig::class);
+        $builder->bindObject(ComponentRegistryInterface::class, $registry);
+
+        $dependency                 = $builder->buildContainer(new Resolver())->resolveDependency(ClassWithRegistryConfig::class);
+
+        $this->assertNull($dependency->explicit);
     }
 }
