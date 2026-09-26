@@ -1,0 +1,35 @@
+{
+    "name": "ifcastle/trueasync-web-server",
+    "description": "IfCastle web server on TrueAsync\\HttpServer.",
+    "type": "ifcastle-engine",
+    "license": "MIT",
+    "keywords": ["web-server", "ifcastle", "trueasync", "http"],
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "IfCastle\\TrueAsyncWebServer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\TrueAsyncWebServer\\": "./tests"
+        }
+    },
+    "require": {
+        "php": ">=8.6",
+        "ext-true_async": "*",
+        "ext-true_async_server": ">=0.16.0",
+        "ifcastle/application": "^0.8",
+        "ifcastle/async-contracts": "^0.5",
+        "ifcastle/protocol-contracts": "^0.7",
+        "league/uri": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5",
+        "ifcastle/codestyle": "^0.1"
+    }
+}

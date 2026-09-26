@@ -14,6 +14,8 @@ interface HeadersMutableInterface extends HeadersInterface, \IfCastle\DesignPatt
     public function setHeaders(array $headers): static;
 
     /**
+     * Replaces every value of the header, whatever the case of its name; a list sets several.
+     *
      * @param string|array<string> $value
      *
      * @return $this

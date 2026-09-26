@@ -25,6 +25,9 @@
     <testsuite name="php-open-telemetry">
       <directory>packages/php-open-telemetry/tests</directory>
     </testsuite>
+    <testsuite name="protocol-contracts">
+      <directory>packages/protocol-contracts/tests</directory>
+    </testsuite>
     <testsuite name="rest-api">
       <directory>packages/rest-api/tests</directory>
     </testsuite>
@@ -33,6 +36,9 @@
     </testsuite>
     <testsuite name="trueasync-engine">
       <directory>packages/trueasync-engine/tests</directory>
+    </testsuite>
+    <testsuite name="trueasync-web-server">
+      <directory>packages/trueasync-web-server/tests</directory>
     </testsuite>
     <testsuite name="type-definitions">
       <directory>packages/type-definitions/tests</directory>

@@ -17,11 +17,11 @@ class ResponseMutable implements HttpResponseMutableInterface
 
     protected string                $protocolRole;
 
-    protected int                   $statusCode;
+    protected int                   $statusCode     = 200;
 
-    protected string                $reasonPhrase;
+    protected string                $reasonPhrase   = '';
 
-    protected string|ReadableStreamInterface $body;
+    protected string|ReadableStreamInterface $body  = '';
 
     public function __construct(?string $protocolName = null, ?string $protocolVersion = null, ?string $protocolRole = null)
     {

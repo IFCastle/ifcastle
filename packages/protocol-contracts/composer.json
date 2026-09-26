@@ -9,6 +9,11 @@
             "IfCastle\\Protocol\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "IfCastle\\Protocol\\": "./tests"
+        }
+    },
     "require": {
         "php": ">=8.5",
         "ifcastle/async-contracts": "^0.5",

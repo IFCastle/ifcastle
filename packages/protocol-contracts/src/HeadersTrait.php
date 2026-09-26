@@ -18,20 +18,36 @@ trait HeadersTrait
 
     public function hasHeader(string $name): bool
     {
-        return \array_key_exists($name, $this->headers);
+        return $this->findHeaderName($name) !== null;
     }
 
     public function getHeader(string $name): array
     {
-        return $this->headers[$name] ?? [];
+        $headerName                 = $this->findHeaderName($name);
+
+        return $headerName === null ? [] : $this->headers[$headerName];
     }
 
     public function getHeaderLine(string $name): string
     {
+        return \implode(',', $this->getHeader($name));
+    }
+
+    /**
+     * The stored spelling of the header $name, compared case-insensitively; null when absent.
+     */
+    protected function findHeaderName(string $name): ?string
+    {
         if (\array_key_exists($name, $this->headers)) {
-            return \implode(',', $this->headers[$name]);
+            return $name;
         }
 
-        return '';
+        foreach (\array_keys($this->headers) as $headerName) {
+            if (\strcasecmp($headerName, $name) === 0) {
+                return $headerName;
+            }
+        }
+
+        return null;
     }
 }

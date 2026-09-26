@@ -33,16 +33,10 @@ trait HeadersMutableTrait
     {
         $this->throwIfImmutable();
 
-        /* @phpstan-ignore-next-line */
-        if (\array_key_exists($header, $this->headers) && !\is_array($this->headers[$header])) {
-            $this->headers[$header] = [$this->headers[$header]];
-        }
+        // A header differing only in case is the same header: keep its first spelling.
+        $header                     = $this->findHeaderName($header) ?? $header;
 
-        if (!\is_array($value)) {
-            $this->headers[$header][] = $value;
-        } else {
-            $this->headers[$header] = \array_merge($this->headers[$header], $value);
-        }
+        $this->headers[$header]     = \is_array($value) ? \array_values($value) : [$value];
 
         return $this;
     }
