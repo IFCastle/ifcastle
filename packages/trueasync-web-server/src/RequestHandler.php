@@ -25,6 +25,9 @@ use TrueAsync\HttpResponse;
  */
 final readonly class RequestHandler
 {
+    /**
+     * Body of the fixed 500 sent when the request yields no response that can be written.
+     */
     public const string SERVER_ERROR = 'Internal server error';
 
     private ResponseFactory $responseFactory;

@@ -15,7 +15,9 @@ use IfCastle\Application\EngineRolesEnum;
  */
 class WebServerApplication extends ApplicationAbstract
 {
-    // Keep equal to extra.ifcastle-installer.package.applications in this package's composer.json.
+    /**
+     * Keep equal to extra.ifcastle-installer.package.applications in this package's composer.json.
+     */
     public const string APP_TYPE    = 'server';
 
     #[\Override]
