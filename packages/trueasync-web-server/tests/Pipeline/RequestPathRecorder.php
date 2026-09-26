@@ -17,6 +17,7 @@ use function Async\spawn;
  * returns into the FOUND_HEADER response header, and into CHILD_HEADER as a coroutine started
  * with Async\spawn() finds it. The paths differ when requests share one environment slot, and
  * the child header is empty when the environment does not reach the request's coroutines.
+ * ORIGINAL_HEADER carries the type of RequestEnvironment::originalRequest().
  */
 final class RequestPathRecorder
 {
@@ -25,6 +26,8 @@ final class RequestPathRecorder
     public const string FOUND_HEADER = 'X-Found-Request-Path';
 
     public const string CHILD_HEADER = 'X-Child-Request-Path';
+
+    public const string ORIGINAL_HEADER = 'X-Original-Request';
 
     /**
      * A request to this path fails at the RESPONSE stage before any response exists, where the
@@ -66,6 +69,7 @@ final class RequestPathRecorder
         if ($response instanceof HttpResponseMutableInterface) {
             $response->setHeader(self::FOUND_HEADER, (string) $found?->findDependency(self::KEY));
             $response->setHeader(self::CHILD_HEADER, (string) $foundByChild?->findDependency(self::KEY));
+            $response->setHeader(self::ORIGINAL_HEADER, \get_debug_type($requestEnvironment->originalRequest()));
 
             if ($requestEnvironment->findDependency(self::KEY) === self::BAD_HEADER_PATH) {
                 $response->setHeader('Bad Header', 'x');

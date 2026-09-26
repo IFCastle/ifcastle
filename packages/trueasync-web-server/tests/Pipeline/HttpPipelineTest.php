@@ -6,6 +6,7 @@ namespace IfCastle\TrueAsyncWebServer\Pipeline;
 
 use IfCastle\Protocol\HeadersInterface;
 use PHPUnit\Framework\TestCase;
+use TrueAsync\HttpRequest;
 
 class HttpPipelineTest extends TestCase
 {
@@ -86,6 +87,13 @@ class HttpPipelineTest extends TestCase
         $this->assertSame(404, $response->status);
         $this->assertSame(404, $response->json()['status'] ?? null);
         $this->assertSame([], $this->pipeline->logRecords());
+    }
+
+    public function testOriginalRequestIsTheServerRequest(): void
+    {
+        $response                   = $this->pipeline->get('/pipeline/text/x');
+
+        $this->assertSame([HttpRequest::class], $response->header(RequestPathRecorder::ORIGINAL_HEADER));
     }
 
     public function testInvalidHostAnswers400(): void

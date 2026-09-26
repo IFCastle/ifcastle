@@ -75,7 +75,7 @@ final readonly class RequestHandler
     private function createRequestEnvironment(HttpRequest $request): RequestEnvironment
     {
         $httpRequest                = new HttpRequestAdapter($request);
-        $requestEnvironment         = new RequestEnvironment($httpRequest, $this->environment);
+        $requestEnvironment         = new RequestEnvironment($request, $this->environment);
         $requestEnvironment->set(HttpRequestInterface::class, $httpRequest);
         $requestEnvironment->set(ResponseFactoryInterface::class, $this->responseFactory);
 
