@@ -13,6 +13,9 @@ namespace IfCastle\ServiceManager\RepositoryStorages;
 interface RepositoryReaderInterface
 {
     /**
+     * The active configuration of every service, keyed by service name; a service without an
+     * active implementation is absent.
+     *
      * @return array<string, array<mixed>>
      */
     public function getServicesConfig(): array;

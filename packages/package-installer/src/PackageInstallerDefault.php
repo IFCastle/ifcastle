@@ -105,11 +105,11 @@ final class PackageInstallerDefault implements PackageInstallerInterface
         }
     }
 
-    #[\Override]
     /**
      * A package that had no installer section before this version has no component yet: it is
      * installed as a new one, main config included.
      */
+    #[\Override]
     public function update(): void
     {
         try {

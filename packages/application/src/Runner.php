@@ -99,11 +99,12 @@ class Runner implements DisposableInterface
 
     /**
      * Runs the application and ends the process: exit code 0 when the engine finished normally,
-     * 1 when the application or its engine failed. A failure is also written to the critical log.
+     * 1 when the application or its engine failed. The failure is printed to stdout, and written to
+     * the critical log when the application had been created.
      */
     final public function runAndExit(): never
     {
-        // The exit code is the only report the calling process gets.
+        // Without it startEngine() swallows a failure once the application exists, and the process exits 0.
         $this->throwEngineException = true;
 
         try {

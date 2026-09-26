@@ -158,7 +158,6 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     #[\Override]
     public function stopAllCoroutines(?\Throwable $exception = null): bool
     {
-        // The caller may be one of them: it stops the others and keeps running.
         $caller                     = current_coroutine();
 
         foreach ([...$this->coroutines, ...$this->timers] as $coroutine) {
