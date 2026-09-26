@@ -79,4 +79,15 @@ class ConfigIniMutableTest extends TestCase
             \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
+
+    public function testSaveNumbers(): void
+    {
+        $config                     = new ConfigIniMutable($this->testFile);
+
+        $config->set('port', 9095);
+        $config->set('ratio', 0.5);
+        $config->save();
+
+        $this->assertSame(['port' => 9095, 'ratio' => 0.5], \parse_ini_file($this->testFile, false, \INI_SCANNER_TYPED));
+    }
 }

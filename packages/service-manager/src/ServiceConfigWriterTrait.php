@@ -46,7 +46,7 @@ trait ServiceConfigWriterTrait
         }
 
         if ($isActive) {
-            $conflicts              = $this->checkConflicts($serviceName, $includeTags);
+            $conflicts              = $this->checkConflicts($serviceName, $includeTags ?? []);
 
             if ($conflicts !== []) {
                 $serviceConfig[ServiceCollectionInterface::IS_ACTIVE] = false;

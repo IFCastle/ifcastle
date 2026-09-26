@@ -25,6 +25,11 @@ final class PackageInstallerDefault implements PackageInstallerInterface
 
     private string $packageName      = '';
 
+    /**
+     * Holds the installer application alive: a Runner ends its application when destroyed.
+     */
+    private Runner|null $runner = null;
+
     private InstallerApplication|null $installerApplication = null;
 
     public function __construct(
@@ -134,14 +139,14 @@ final class PackageInstallerDefault implements PackageInstallerInterface
     {
         if ($this->installerApplication === null) {
 
-            $runner                 = new Runner(
+            $this->runner           = new Runner(
                 $this->zeroContext->getApplicationDirectory(),
                 InstallerApplication::APP_CODE,
                 InstallerApplication::class,
                 [EngineRolesEnum::CONSOLE->value],
             );
 
-            $application            = $runner->run();
+            $application            = $this->runner->run();
 
             if (false === $application instanceof InstallerApplication) {
                 throw new UnexpectedValueType('InstallerApplication', $application, InstallerApplication::class);
@@ -204,6 +209,7 @@ final class PackageInstallerDefault implements PackageInstallerInterface
                 config       : $serviceConfig[Service::CONFIG]      ?? [],
                 includeTags  : $serviceConfig[Service::TAGS]        ?? [],
                 excludeTags  : $serviceConfig[Service::EXCLUDE_TAGS] ?? [],
+                packageName  : $this->packageName,
             );
 
             if ($isUpdate) {
@@ -233,35 +239,6 @@ final class PackageInstallerDefault implements PackageInstallerInterface
             } catch (\Exception $exception) {
                 echo "Error uninstalling service $serviceName: {$exception->getMessage()}\n";
             }
-        }
-    }
-
-    /**
-     * @param array<string, array<string, mixed>> $mainConfig
-     * @throws \Throwable
-     */
-    private function appendMainConfig(array $mainConfig): void
-    {
-        $configurator               = $this->getInstaller()->findMainConfigAppender();
-
-        if ($configurator === null) {
-            return;
-        }
-
-        foreach ($mainConfig as $section => $data) {
-
-            if (!\is_array($data)) {
-                continue;
-            }
-
-            $config                 = $data[self::CONFIG] ?? null;
-            $comment                = $data[self::COMMENT] ?? '';
-
-            if ($config === null) {
-                continue;
-            }
-
-            $configurator->appendSectionIfNotExists($section, $config, $comment);
         }
     }
 }

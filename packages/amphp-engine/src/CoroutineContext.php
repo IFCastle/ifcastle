@@ -100,7 +100,9 @@ final class CoroutineContext implements CoroutineContextInterface
     #[\Override]
     public function setForRequest(string $key, mixed $value): static
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
+
+        return $this;
     }
 
     #[\Override]

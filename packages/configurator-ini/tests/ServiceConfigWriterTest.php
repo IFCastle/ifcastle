@@ -57,6 +57,16 @@ class ServiceConfigWriterTest extends ServiceConfigTestCase
         $this->assertEquals($expected, $data, 'Data not equals');
     }
 
+    public function testAddServiceConfigWithoutTags(): void
+    {
+        $config                     = new ServiceConfigWriter($this->appDir);
+
+        $config->addServiceConfig('package1', 'service1', ['class' => 'Service1']);
+        $config->saveRepository();
+
+        $this->assertTrue(new ServiceConfig($this->appDir)->findServiceConfig('service1')['isActive'] ?? null);
+    }
+
     public function testRemoveServiceConfig(): void
     {
         $file                       = $this->appDir . '/services.ini';

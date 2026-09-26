@@ -104,7 +104,7 @@ class ConfigIniMutable extends ConfigIni implements ConfigMutableInterface
         if (\is_bool($value)) {
             return $value ? 'true' : 'false';
         } elseif (\is_numeric($value)) {
-            return $value;
+            return (string) $value;
         }
 
         return '"' . \addcslashes((string) $value, '"') . '"';

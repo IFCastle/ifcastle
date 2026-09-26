@@ -21,6 +21,13 @@ final class DeferredTaskExecutor
     private readonly BootManagerInterface $bootManager;
     private readonly ZeroContext $zeroContext;
 
+    /**
+     * Holds the installer application alive: a Runner ends its application when destroyed.
+     */
+    private Runner|null $runner = null;
+
+    private InstallerApplication|null $installerApplication = null;
+
     public function __construct(
         private readonly string $projectDir
     ) {
@@ -117,6 +124,7 @@ final class DeferredTaskExecutor
         $configurator = $installer->findMainConfigAppender();
 
         if ($configurator === null) {
+            echo "Skipped: the project has no configurator to write main config\n";
             return;
         }
 
@@ -144,18 +152,24 @@ final class DeferredTaskExecutor
      */
     private function getInstaller(): InstallerApplication
     {
-        $runner = new Runner(
+        if ($this->installerApplication !== null) {
+            return $this->installerApplication;
+        }
+
+        $this->runner = new Runner(
             $this->projectDir,
             InstallerApplication::APP_CODE,
             InstallerApplication::class,
             [EngineRolesEnum::CONSOLE->value],
         );
 
-        $application = $runner->run();
+        $application = $this->runner->run();
 
         if (false === $application instanceof InstallerApplication) {
             throw new UnexpectedValueType('InstallerApplication', $application, InstallerApplication::class);
         }
+
+        $this->installerApplication = $application;
 
         return $application;
     }

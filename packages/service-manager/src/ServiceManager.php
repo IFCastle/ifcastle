@@ -21,7 +21,14 @@ class ServiceManager implements ServiceManagerInterface
     public function installService(ServiceDescriptorInterface $serviceDescriptor): void
     {
         $serviceConfig = $this->buildConfigByServiceDescriptor($serviceDescriptor);
-        $this->repositoryWriter->addServiceConfig($serviceDescriptor->getPackageName(), $serviceDescriptor->getServiceName(), $serviceConfig);
+        $this->repositoryWriter->addServiceConfig(
+            $serviceDescriptor->getPackageName(),
+            $serviceDescriptor->getServiceName(),
+            $serviceConfig,
+            $serviceDescriptor->isServiceActive(),
+            $serviceDescriptor->getIncludeTags(),
+            $serviceDescriptor->getExcludeTags(),
+        );
         $this->repositoryWriter->saveRepository();
     }
 

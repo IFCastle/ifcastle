@@ -69,7 +69,7 @@ final readonly class RequestHandler
         }
     }
 
-    private function createRequestEnvironment(HttpRequest $request): RequestEnvironmentInterface
+    private function createRequestEnvironment(HttpRequest $request): RequestEnvironment
     {
         $httpRequest                = new HttpRequestAdapter($request);
         $requestEnvironment         = new RequestEnvironment($httpRequest, $this->environment);

@@ -6,6 +6,7 @@ namespace IfCastle\PackageInstaller;
 
 use IfCastle\Application\Bootloader\BootManager\BootManagerByDirectory;
 use IfCastle\Application\Bootloader\BootManager\BootManagerInterface;
+use IfCastle\Configurator\ServiceConfig;
 use IfCastle\OsUtilities\Safe;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +28,7 @@ class PackageInstallerDefaultTest extends TestCase
     {
         $bootManager                = $this->instanciateBootManager();
         $zeroContext                = new ZeroContext(__DIR__);
-        $deferredTasks              = $this->createMock(DeferredTasksInterface::class);
+        $deferredTasks              = $this->createStub(DeferredTasksInterface::class);
         $packageInstaller           = new PackageInstallerDefault($bootManager, $zeroContext, $deferredTasks);
 
         $packageInstaller->setConfig([
@@ -55,7 +56,7 @@ class PackageInstallerDefaultTest extends TestCase
     {
         $bootManager                = $this->instanciateBootManager();
         $zeroContext                = new ZeroContext(__DIR__);
-        $deferredTasks              = $this->createMock(DeferredTasksInterface::class);
+        $deferredTasks              = $this->createStub(DeferredTasksInterface::class);
         $packageInstaller           = new PackageInstallerDefault($bootManager, $zeroContext, $deferredTasks);
 
         $packageInstaller->setConfig([
@@ -107,7 +108,7 @@ class PackageInstallerDefaultTest extends TestCase
     public function testUpdateInstallsAPackageItDidNotKnow(): void
     {
         $packageInstaller           = new PackageInstallerDefault(
-            $this->instanciateBootManager(), new ZeroContext(__DIR__), $this->createMock(DeferredTasksInterface::class)
+            $this->instanciateBootManager(), new ZeroContext(__DIR__), $this->createStub(DeferredTasksInterface::class)
         );
 
         $packageInstaller->setConfig([
@@ -122,6 +123,44 @@ class PackageInstallerDefaultTest extends TestCase
         $data                       = \parse_ini_file(__DIR__ . '/bootloader/testPackage.ini', true, \INI_SCANNER_TYPED);
 
         $this->assertEquals(['isActive' => true, 'bootloader' => ['testBootloader']], $data['group-0'] ?? null);
+    }
+
+    public function testInstallWritesServices(): void
+    {
+        $project                    = new TemporaryProject();
+
+        try {
+            $packageInstaller       = new PackageInstallerDefault(
+                new BootManagerByDirectory($project->dir . '/bootloader'),
+                new ZeroContext($project->dir),
+                $this->createStub(DeferredTasksInterface::class)
+            );
+
+            $packageInstaller->setConfig([
+                PackageInstallerInterface::PACKAGE  => [
+                    PackageInstallerInterface::NAME => 'testPackage',
+                    PackageInstallerInterface::BOOTLOADERS => ['testBootloader'],
+                    // Keeps the missing bootloader class out of the installer application.
+                    PackageInstallerInterface::APPLICATIONS => ['server'],
+                ],
+                PackageInstallerInterface::SERVICES => [[
+                    Service::NAME       => 'testService',
+                    Service::CLASS_NAME => 'TestService',
+                    Service::IS_ACTIVE  => false,
+                ]],
+            ], 'test-package');
+
+            $packageInstaller->install();
+
+            $service                = new ServiceConfig($project->dir)->getServiceCollection('testService')['testService'][0] ?? [];
+
+            $this->assertSame(
+                ['TestService', false, 'testPackage'],
+                [$service['class'] ?? null, $service['isActive'] ?? null, $service['package'] ?? null]
+            );
+        } finally {
+            $project->remove();
+        }
     }
 
     private function instanciateBootManager(): BootManagerInterface

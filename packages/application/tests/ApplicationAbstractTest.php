@@ -19,7 +19,7 @@ class ApplicationAbstractTest extends TestCase
 
         if (\file_exists($logFile)) {
             \unlink($logFile);
-            \unlink(self::APP_DIR . '/logs');
+            \rmdir(self::APP_DIR . '/logs');
         }
     }
 
