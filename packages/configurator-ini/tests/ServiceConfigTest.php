@@ -122,4 +122,30 @@ class ServiceConfigTest extends ServiceConfigTestCase
         $this->assertEquals(['tag5', 'tag6'], $services['service1']['2']['tags']);
     }
 
+    public function testServicesConfigHoldsTheActiveImplementation(): void
+    {
+        $config = <<<INI
+            [service1.0]
+            _service_name_ = 'service1'
+            class = 'InactiveClass1'
+            isActive = false
+
+            [service1.1]
+            _service_name_ = 'service1'
+            class = 'ServiceClass1'
+            isActive = true
+
+            [service2.0]
+            _service_name_ = 'service2'
+            class = 'ServiceClass2'
+            isActive = false
+            INI;
+
+        \file_put_contents($this->appDir . '/services.ini', $config);
+
+        $services                   = new ServiceConfig($this->appDir)->getServicesConfig();
+
+        $this->assertSame(['service1'], \array_keys($services));
+        $this->assertSame('ServiceClass1', $services['service1']['class'] ?? null);
+    }
 }

@@ -14,6 +14,7 @@ use IfCastle\RestApi\Bootloader as RestApiBootloader;
 use IfCastle\TrueAsync\Bootloader as TrueAsyncBootloader;
 use IfCastle\TrueAsyncWebServer\Bootloader as WebServerBootloader;
 use IfCastle\TrueAsyncWebServer\TestHttpClient;
+use IfCastle\TrueAsyncWebServer\WebServerApplication;
 use IfCastle\TrueAsyncWebServer\WebServerEngine;
 use PHPUnit\Framework\Assert;
 use Psr\Log\LoggerInterface;
@@ -49,7 +50,7 @@ final class HttpPipeline
         $this->client               = new TestHttpClient(TestHttpClient::freePort());
         $config                     = ['server' => ['host' => '127.0.0.1', 'port' => $this->client->port]];
 
-        $this->runner               = new PipelineRunner($this->appDir, 'test', PipelineApplication::class)
+        $this->runner               = new PipelineRunner($this->appDir, 'test', WebServerApplication::class)
             ->defineBootloaderBuilder(new BootloaderBuilderInMemory($this->appDir, 'test', [], [
                 TrueAsyncBootloader::class,
                 // Before rest-api: its RESPONSE handler then runs ahead of the response strategy.

@@ -63,9 +63,9 @@ trait ServiceConfigReaderTrait
         $collection                 = [];
 
         foreach ($this->data as $service => $implementations) {
-            foreach ($implementations as $serviceSuffix => $serviceConfig) {
+            foreach ($implementations as $serviceConfig) {
                 if (($serviceConfig[ServiceCollectionInterface::IS_ACTIVE] ?? false) === true) {
-                    $collection[$service][(string) $serviceSuffix] = $serviceConfig;
+                    $collection[$service] = $serviceConfig;
                     break;
                 }
             }
