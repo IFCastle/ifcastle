@@ -19,6 +19,9 @@
     <testsuite name="di">
       <directory>packages/di/tests</directory>
     </testsuite>
+    <testsuite name="monolog">
+      <directory>packages/monolog/tests</directory>
+    </testsuite>
     <testsuite name="package-installer">
       <directory>packages/package-installer/tests</directory>
     </testsuite>
