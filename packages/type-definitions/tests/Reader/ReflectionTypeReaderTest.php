@@ -206,4 +206,30 @@ class ReflectionTypeReaderTest extends TestCase
         $this->assertEquals('allOf', $definition->getTypeName());
         $this->assertInstanceOf(TypeObject::class, $definition->getCases()[0]);
     }
+
+    public function testPropertyIsRequiredWhenItHasNoDefault(): void
+    {
+        $object                     = new class ('a') {
+            public string $plain;
+
+            public ?int $withDefault = null;
+
+            public function __construct(public string $promoted, public int $promotedWithDefault = 1) {}
+        };
+
+        $required                   = [];
+
+        foreach (new \ReflectionObject($object)->getProperties() as $property) {
+            $definition             = new ReflectionTypeReader(
+                $property, new TypeContext($object::class, propertyName: $property->getName()), new ExplicitTypeResolver()
+            )->generate();
+
+            $required[$property->getName()] = $definition?->isRequired();
+        }
+
+        $this->assertSame(
+            ['plain' => true, 'withDefault' => false, 'promoted' => true, 'promotedWithDefault' => false],
+            $required
+        );
+    }
 }

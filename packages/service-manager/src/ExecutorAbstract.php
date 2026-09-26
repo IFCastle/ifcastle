@@ -128,9 +128,7 @@ abstract class ExecutorAbstract implements ExecutorInterface
 
                 if ($parameter->isDefaultValueAvailable()) {
                     $normalized[$parameterName] = $parameter->getDefaultValue();
-                }
-
-                if ($parameter->isNullable()) {
+                } elseif ($parameter->isNullable()) {
                     $normalized[$parameterName] = null;
                 }
 
@@ -225,7 +223,9 @@ abstract class ExecutorAbstract implements ExecutorInterface
 
     protected function getRequestEnv(): ContainerInterface|null
     {
-        return null;
+        return $this->systemEnvironment instanceof RequestEnvironmentProviderInterface
+               ? $this->systemEnvironment->getRequestEnvironment()
+               : null;
     }
 
     protected function initializeInterceptors(): void

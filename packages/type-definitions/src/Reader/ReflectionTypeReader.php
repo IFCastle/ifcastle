@@ -86,17 +86,16 @@ class ReflectionTypeReader
         $name                   = $this->getName();
 
         if ($type->isBuiltin()) {
-            return DefinitionAbstract::getDefinitionByNativeTypeName($type->getName(), $name);
+            $definition         = DefinitionAbstract::getDefinitionByNativeTypeName($type->getName(), $name);
+        } else {
+            $definition         = $this->resolver->resolveType($type->getName(), $this->typeContext);
+            // Make a type mutable
+            $definition         = $definition === null ? null : clone $definition;
         }
-
-        $definition             = $this->resolver->resolveType($type->getName(), $this->typeContext);
 
         if ($definition === null) {
             return null;
         }
-
-        // Make a type mutable
-        $definition             = clone $definition;
 
         $definition->addAttributes(...$this->typeContext->getAttributes());
 
@@ -115,14 +114,38 @@ class ReflectionTypeReader
         }
 
         if ($this->definition instanceof \ReflectionProperty) {
-            $definition->setIsRequired(false === $this->definition->isDefault());
-
-            if ($this->definition->hasDefaultValue()) {
-                $definition->setDefaultValue($this->definition->getDefaultValue());
-            }
+            $this->applyPropertyDefault($definition, $this->definition);
         }
 
         return $definition;
+    }
+
+    /**
+     * A property is required when it has no default. A promoted property takes its default from the
+     * constructor parameter: the property itself never has one.
+     */
+    protected function applyPropertyDefault(DefinitionMutableInterface $definition, \ReflectionProperty $property): void
+    {
+        $default                    = $property;
+
+        if ($property->isPromoted()) {
+            foreach ($property->getDeclaringClass()->getConstructor()?->getParameters() ?? [] as $parameter) {
+                if ($parameter->getName() === $property->getName()) {
+                    $default        = $parameter;
+                    break;
+                }
+            }
+        }
+
+        $hasDefault                 = $default instanceof \ReflectionParameter
+                                      ? $default->isDefaultValueAvailable()
+                                      : $default->hasDefaultValue();
+
+        $definition->setIsRequired(false === $hasDefault);
+
+        if ($hasDefault) {
+            $definition->setDefaultValue($default->getDefaultValue());
+        }
     }
 
     /**

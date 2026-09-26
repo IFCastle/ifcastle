@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IfCastle\TypeDefinitions\Reader;
 
 use IfCastle\TypeDefinitions\Error;
+use IfCastle\TypeDefinitions\FromEnv;
 use IfCastle\TypeDefinitions\Resolver\ExplicitTypeResolver;
 use IfCastle\TypeDefinitions\TypeErrorMessage;
 use IfCastle\TypeDefinitions\TypeFunction;
@@ -95,5 +96,21 @@ class ReflectionFunctionReaderTest extends TestCase
         $attribute = $definition->getAttributes()[1] ?? null;
 
         $this->assertInstanceOf(SomeAttribute::class, $attribute);
+    }
+
+    public function testNativeParameterKeepsAttributesDefaultAndNullability(): void
+    {
+        $function                   = static function (#[FromEnv(key: 'key')] string $withDefault = 'default', ?int $nullable = null): void {};
+
+        $definition                 = new ReflectionFunctionReader(new ExplicitTypeResolver())->extractFunctionDescriptor($function);
+        [$withDefault, $nullable]   = \array_values($definition->getArguments());
+
+        $this->assertNotNull($withDefault->findAttribute(FromEnv::class));
+        $this->assertTrue($withDefault->isDefaultValueAvailable());
+        $this->assertSame('default', $withDefault->getDefaultValue());
+        $this->assertFalse($withDefault->isRequired());
+
+        $this->assertTrue($nullable->isNullable());
+        $this->assertTrue($nullable->isDefaultValueAvailable());
     }
 }
