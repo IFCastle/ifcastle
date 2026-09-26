@@ -151,14 +151,20 @@ final class CoroutineScheduler implements CoroutineSchedulerInterface
     }
 
     /**
-     * Cancels every coroutine started by run() and every timer that has not completed. Coroutines
-     * started by TrueAsync itself (HTTP request handlers, direct Async\spawn()) are not affected.
+     * Cancels every coroutine started by run() and every timer that has not completed, except the
+     * calling coroutine, which keeps running. Coroutines started by TrueAsync itself (HTTP request
+     * handlers, direct Async\spawn()) are not affected.
      */
     #[\Override]
     public function stopAllCoroutines(?\Throwable $exception = null): bool
     {
+        // The caller may be one of them: it stops the others and keeps running.
+        $caller                     = current_coroutine();
+
         foreach ([...$this->coroutines, ...$this->timers] as $coroutine) {
-            $coroutine->cancel(CoroutineAdapter::toCancellation($exception));
+            if ($coroutine !== $caller) {
+                $coroutine->cancel(CoroutineAdapter::toCancellation($exception));
+            }
         }
 
         return true;

@@ -127,6 +127,32 @@ class CoroutineSchedulerTest extends TestCase
         $this->assertSame($reason, $caught->getPrevious());
     }
 
+    public function testStopAllCoroutinesSparesTheCaller(): void
+    {
+        $scheduler                  = new CoroutineScheduler();
+        $state                      = new \stdClass();
+        $state->callerFinished      = false;
+
+        $sibling                    = $scheduler->run(static function (): void {
+            delay(1000);
+        });
+
+        $caller                     = $scheduler->run(static function () use ($scheduler, $state): void {
+            delay(5);
+            $scheduler->stopAllCoroutines();
+            // A suspension point: a cancelled caller would stop here.
+            delay(1);
+            $state->callerFinished  = true;
+        });
+
+        Support::waitUntilFinished($caller);
+        Support::waitUntilFinished($sibling);
+
+        $this->assertTrue($state->callerFinished);
+        $this->assertFalse($caller->isCancelled());
+        $this->assertTrue($sibling->isCancelled());
+    }
+
     public function testStopOnCompletedCoroutineReturnsFalse(): void
     {
         $coroutine                  = new CoroutineScheduler()->run(static fn() => null);
@@ -200,15 +226,16 @@ class CoroutineSchedulerTest extends TestCase
     public function testDeferRunsTheCallback(): void
     {
         $scheduler                  = new CoroutineScheduler();
-        $called                     = false;
+        $state                      = new \stdClass();
+        $state->called              = false;
 
-        $scheduler->defer(static function () use (&$called): void {
-            $called                 = true;
+        $scheduler->defer(static function () use ($state): void {
+            $state->called          = true;
         });
 
-        $this->assertFalse($called);
+        $this->assertFalse($state->called);
         delay(5);
-        $this->assertTrue($called);
+        $this->assertTrue($state->called);
     }
 
     public function testStopAllCoroutinesCancelsTimers(): void

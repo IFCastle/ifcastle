@@ -126,7 +126,6 @@ interface CoroutineSchedulerInterface
      * Schedules a callback to execute periodically.
      *
      * $callback will be called repeatedly, with $interval seconds between each call.
-     * $callback can implement a FreeInterface. So when a process is terminated, $callback->free() should be called.
      *
      * @param   float|int           $interval  Interval in seconds
      *
