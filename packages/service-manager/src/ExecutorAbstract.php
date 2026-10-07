@@ -10,6 +10,8 @@ use IfCastle\DesignPatterns\Interceptor\InterceptorRegistryInterface;
 use IfCastle\DI\AutoResolverInterface;
 use IfCastle\DI\ContainerInterface;
 use IfCastle\ServiceManager\Exceptions\ServiceException;
+use IfCastle\ServiceManager\Exceptions\InvalidParameter;
+use IfCastle\TypeDefinitions\Exceptions\DefinitionIsNotValid;
 use IfCastle\TypeDefinitions\DefinitionInterface;
 use IfCastle\TypeDefinitions\FromEnv;
 use IfCastle\TypeDefinitions\FunctionDescriptorInterface;
@@ -132,7 +134,11 @@ abstract class ExecutorAbstract implements ExecutorInterface
             if (\is_object($parameters[$parameterName]) || $parameter instanceof TypeInternal) {
                 $normalized[$parameterName] = $parameters[$parameterName];
             } else {
-                $normalized[$parameterName] = $parameter->decode($parameters[$parameterName]);
+                try {
+                    $normalized[$parameterName] = $parameter->decode($parameters[$parameterName]);
+                } catch (DefinitionIsNotValid $exception) {
+                    throw new InvalidParameter($parameterName, $exception);
+                }
             }
         }
 

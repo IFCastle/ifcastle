@@ -100,7 +100,9 @@ class TypeInteger extends DefinitionAbstract implements NumberMutableInterface, 
     #[\Override]
     protected function validateValue(mixed $value): bool
     {
-        if (!\is_numeric($value) || \str_contains(\strtolower($value), 'e')) {
+        try {
+            $value = $this->decode($value);
+        } catch (DefinitionIsNotValid|\TypeError) {
             return false;
         }
 
@@ -118,8 +120,15 @@ class TypeInteger extends DefinitionAbstract implements NumberMutableInterface, 
     #[\Override]
     public function decode(array|int|float|string|bool $data): mixed
     {
-        if (\is_numeric($data)) {
-            return (int) $data;
+        if (\is_int($data)) {
+            return $data;
+        }
+
+        if (\is_string($data) && \preg_match('/^-?(?:0|[1-9][0-9]*)$/D', $data)) {
+            $value = \filter_var($data, FILTER_VALIDATE_INT);
+            if ($value !== false) {
+                return $value;
+            }
         }
 
         throw new DefinitionIsNotValid($this, 'Type is invalid');
