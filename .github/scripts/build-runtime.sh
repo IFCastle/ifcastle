@@ -29,7 +29,7 @@ checkout https://github.com/true-async/server.git "$server_revision" "$CI_RUNTIM
         --enable-zts --enable-async --enable-pdo --with-pdo-mysql --with-pdo-sqlite \
         --enable-mbstring --with-libxml --enable-dom --enable-xml --enable-xmlreader --enable-xmlwriter \
         --enable-simplexml --enable-tokenizer --enable-ctype --enable-filter \
-        --enable-phar --enable-session --enable-sockets --enable-posix --enable-pcntl \
+        --enable-phar --enable-fileinfo --enable-session --enable-sockets --enable-posix --enable-pcntl \
         --with-openssl --with-zlib --with-iconv --with-curl --with-zip --with-password-argon2 \
         --with-config-file-path="$CI_RUNTIME_PREFIX/etc" \
         --with-config-file-scan-dir="$CI_RUNTIME_PREFIX/etc/conf.d"
