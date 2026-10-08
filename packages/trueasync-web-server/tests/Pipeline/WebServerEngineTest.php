@@ -87,4 +87,46 @@ class WebServerEngineTest extends TestCase
 
         new WebServerEngine($systemEnvironment)->start();
     }
+
+    // Native H1 parser pooling is process-global; start this contract with a fresh parser pool.
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    public function testConfiguredBodyLimitRejectsOnlyOversizedRequestsAndKeepsServing(): void
+    {
+        $this->pipeline             = new HttpPipeline(['maxBodySize' => 1024]);
+        $json                       = '{"a":2,"b":3}';
+        $headers                    = ['Content-Type' => 'application/json'];
+        $below                      = $json . \str_repeat(' ', 1023 - \strlen($json));
+        $above                      = $json . \str_repeat(' ', 1025 - \strlen($json));
+
+        $accepted                   = $this->pipeline->request('POST', '/pipeline/sum', $headers, $below);
+        $this->assertSame(200, $accepted->status);
+        $this->assertSame('5', $accepted->body);
+
+        $rejected                   = $this->pipeline->request('POST', '/pipeline/sum', $headers, $above);
+        $this->assertSame(413, $rejected->status);
+        $this->assertTrue($this->pipeline->client->isListening());
+        $this->assertSame(200, $this->pipeline->get('/pipeline/echo/after/0')->status);
+        $this->assertSame([], $this->pipeline->logRecords());
+    }
+
+    public static function invalidBodySizes(): array
+    {
+        return [[0], [-1], ['2048'], [null], [true], [1], [17179869185]];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidBodySizes')]
+    #[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
+    public function testInvalidBodyLimitIsRefusedBeforeListening(mixed $maxBodySize): void
+    {
+        $systemEnvironment          = $this->createMock(SystemEnvironmentInterface::class);
+        $systemEnvironment->method('resolveDependency')->with(ConfigInterface::class)
+                          ->willReturn(new ConfigInMemory([WebServerEngine::CONFIG_SECTION => [
+                              'host' => '127.0.0.1', 'port' => 9095, 'maxBodySize' => $maxBodySize,
+                          ]]));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('maxBodySize');
+
+        new WebServerEngine($systemEnvironment)->start();
+    }
 }

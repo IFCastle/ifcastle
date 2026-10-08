@@ -41,14 +41,16 @@ final class HttpPipeline
 
     private SystemEnvironmentInterface $systemEnvironment;
 
-    public function __construct()
+    /** @param array<string, mixed> $serverOverrides Additional [server] options for the test. */
+    public function __construct(array $serverOverrides = [])
     {
         $this->appDir               = \sys_get_temp_dir() . '/ifcastle-pipeline-' . \bin2hex(\random_bytes(6));
         // ApplicationAbstract refuses to start without a vendor directory.
         \mkdir($this->appDir . '/vendor', 0o777, true);
 
         $this->client               = new TestHttpClient(TestHttpClient::freePort());
-        $config                     = ['server' => ['host' => '127.0.0.1', 'port' => $this->client->port]];
+        $config                     = ['server' => \array_replace($serverOverrides,
+            ['host' => '127.0.0.1', 'port' => $this->client->port])];
 
         $this->runner               = new PipelineRunner($this->appDir, 'test', WebServerApplication::class)
             ->defineBootloaderBuilder(new BootloaderBuilderInMemory($this->appDir, 'test', [], [

@@ -21,8 +21,9 @@ use function Async\spawn;
 /**
  * Serves the application's request plan through TrueAsync\HttpServer.
  *
- * Reads the [server] section: host (required) and port (default 9095). One worker thread: a
- * second thread would boot the application again. start() blocks until stop(), SIGTERM or SIGINT.
+ * Reads the [server] section: host (required), port (default 9095), and optional maxBodySize
+ * (bytes). One worker thread prevents a second application boot. start() blocks until stop(),
+ * SIGTERM or SIGINT.
  */
 class WebServerEngine extends TrueAsyncEngine
 {
@@ -39,7 +40,7 @@ class WebServerEngine extends TrueAsyncEngine
     /**
      * Returns at once when stop() came first.
      *
-     * @throws \InvalidArgumentException when [server] names no host
+     * @throws \InvalidArgumentException when [server] names no host or an invalid maxBodySize
      * @throws \LogicException when the engine is already serving
      */
     #[\Override]
@@ -62,9 +63,24 @@ class WebServerEngine extends TrueAsyncEngine
             throw new \InvalidArgumentException('The [' . self::CONFIG_SECTION . '] section names no host');
         }
 
-        $httpServer                 = new HttpServer(
-            new HttpServerConfig()->addListener($host, (int) ($config['port'] ?? self::DEFAULT_PORT))->setWorkers(1)
-        );
+        $serverConfig               = new HttpServerConfig()->addListener($host, (int) ($config['port'] ?? self::DEFAULT_PORT))
+                                                             ->setWorkers(1);
+
+        if (\array_key_exists('maxBodySize', $config)) {
+            $maxBodySize             = $config['maxBodySize'];
+
+            if (!\is_int($maxBodySize) || $maxBodySize <= 0) {
+                throw new \InvalidArgumentException('The [server].maxBodySize setting must be a positive integer');
+            }
+
+            try {
+                $serverConfig->setMaxBodySize($maxBodySize);
+            } catch (\TrueAsync\HttpServerInvalidArgumentException $error) {
+                throw new \InvalidArgumentException('Invalid [server].maxBodySize: ' . $error->getMessage(), 0, $error);
+            }
+        }
+
+        $httpServer                 = new HttpServer($serverConfig);
 
         $httpServer->addHttpHandler(new RequestHandler(
             $this->systemEnvironment->resolveDependency(RequestPlanInterface::class),
