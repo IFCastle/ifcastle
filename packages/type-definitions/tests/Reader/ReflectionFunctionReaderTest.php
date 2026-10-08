@@ -7,14 +7,36 @@ namespace IfCastle\TypeDefinitions\Reader;
 use IfCastle\TypeDefinitions\Error;
 use IfCastle\TypeDefinitions\FromEnv;
 use IfCastle\TypeDefinitions\Resolver\ExplicitTypeResolver;
+use IfCastle\TypeDefinitions\Type;
 use IfCastle\TypeDefinitions\TypeErrorMessage;
 use IfCastle\TypeDefinitions\TypeFunction;
+use IfCastle\TypeDefinitions\TypeInternal;
 use IfCastle\TypeDefinitions\TypesEnum;
 use IfCastle\TypeDefinitions\TypeVoid;
 use PHPUnit\Framework\TestCase;
 
+interface ReflectionDependency {}
+
 class ReflectionFunctionReaderTest extends TestCase
 {
+    public function testExactTypeAttributeResolvesAnInterfaceParameter(): void
+    {
+        $function = static function (
+            #[FromEnv(key: 'request')]
+            #[Type(new TypeInternal('request', ReflectionDependency::class))]
+            ReflectionDependency $request
+        ): void {};
+
+        $descriptor = new ReflectionFunctionReader(new ExplicitTypeResolver())->extractFunctionDescriptor($function);
+        [$parameter] = array_values($descriptor->getArguments());
+
+        self::assertInstanceOf(TypeInternal::class, $parameter);
+        self::assertSame('request', $parameter->getName());
+        self::assertSame(ReflectionDependency::class, $parameter->getTypeName());
+        self::assertNotNull($parameter->findAttribute(Type::class));
+        self::assertNotNull($parameter->findAttribute(FromEnv::class));
+    }
+
     public function testExtractFunctionDescriptor(): void
     {
         $function = function (int $integer, float $float, bool $boolean, array $array, string $string): void {};

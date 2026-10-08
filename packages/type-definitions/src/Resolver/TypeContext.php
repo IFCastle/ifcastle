@@ -55,7 +55,7 @@ readonly class TypeContext implements TypeContextInterface
     public function getAttribute(string $attribute): mixed
     {
         foreach ($this->attributes as $attr) {
-            if (\is_subclass_of($attr, $attribute)) {
+            if (\is_a($attr, $attribute)) {
                 return $attr;
             }
         }
@@ -67,7 +67,7 @@ readonly class TypeContext implements TypeContextInterface
     public function hasAttribute(string $attribute): bool
     {
         foreach ($this->attributes as $attr) {
-            if (\is_subclass_of($attr, $attribute)) {
+            if (\is_a($attr, $attribute)) {
                 return true;
             }
         }
