@@ -26,7 +26,7 @@ checkout https://github.com/true-async/server.git "$server_revision" "$CI_RUNTIM
     cd "$CI_RUNTIME_SOURCE/php"
     ./buildconf --force
     ./configure --prefix="$CI_RUNTIME_PREFIX" --disable-all --without-pear \
-        --enable-zts --enable-async --enable-pdo --with-pdo-mysql --with-pdo-sqlite \
+        --enable-zts --enable-async --enable-pdo --with-pdo-mysql --with-pdo-sqlite --with-pdo-pgsql \
         --enable-mbstring --with-libxml --enable-dom --enable-xml --enable-xmlreader --enable-xmlwriter \
         --enable-simplexml --enable-tokenizer --enable-ctype --enable-filter \
         --enable-phar --enable-fileinfo --enable-session --enable-sockets --enable-posix --enable-pcntl \
@@ -47,7 +47,8 @@ checkout https://github.com/true-async/server.git "$server_revision" "$CI_RUNTIM
 printf '%s\n' 'extension=true_async_server.so' > "$CI_RUNTIME_PREFIX/etc/conf.d/server.ini"
 "$CI_RUNTIME_PREFIX/bin/php" -r '
 if (PHP_VERSION_ID < 80600 || !PHP_ZTS || !extension_loaded("true_async")
-    || !extension_loaded("true_async_server") || version_compare(phpversion("true_async_server"), "0.16.0", "<")) {
+    || !extension_loaded("true_async_server") || !extension_loaded("pdo_pgsql")
+    || version_compare(phpversion("true_async_server"), "0.16.0", "<")) {
     fwrite(STDERR, "Invalid IFCastle CI runtime\n"); exit(1);
 }
 '

@@ -29,7 +29,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends autoconf bison re2c build-essential pkg-config \
             libuv1-dev libssl-dev libxml2-dev libsqlite3-dev libonig-dev libcurl4-openssl-dev \
-            libzip-dev libargon2-dev zlib1g-dev
+            libzip-dev libargon2-dev zlib1g-dev libpq-dev
 
       - name: Restore pinned native runtime
         id: runtime
