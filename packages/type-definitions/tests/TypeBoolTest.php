@@ -21,6 +21,16 @@ class TypeBoolTest extends TestCase
         $this->assertFalse($typeBool->decode(0));
     }
 
+    public function testDecodesTheDigitsOfAQueryString(): void
+    {
+        $typeBool                   = new TypeBool('bool');
+
+        $this->assertTrue($typeBool->decode('1'));
+        $this->assertFalse($typeBool->decode('0'));
+        $this->expectException(Exceptions\DecodingException::class);
+        $typeBool->decode('2');
+    }
+
     public function testEncode(): void
     {
         $typeBool                   = new TypeBool('bool');

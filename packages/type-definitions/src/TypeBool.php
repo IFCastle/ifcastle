@@ -75,8 +75,8 @@ class TypeBool extends DefinitionAbstract implements StringableInterface
         }
 
         return match ($data) {
-            true, 1, 'true'         => true,
-            false, 0, 'false'       => false,
+            true, 1, '1', 'true'    => true,
+            false, 0, '0', 'false'  => false,
             default                 => throw new DecodingException($this, 'Invalid boolean format', ['data' => $data])
         };
     }
