@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace IfCastle\TrueAsyncWebServer\Pipeline;
 
 use IfCastle\Exceptions\ClientException;
+use IfCastle\Protocol\HeadersInterface;
+use IfCastle\RestApi\RequestBody;
 use IfCastle\RestApi\Rest;
 use IfCastle\ServiceManager\AsServiceMethod;
 use IfCastle\TypeDefinitions\FromEnv;
@@ -69,6 +71,13 @@ final class PipelineService
     public function form(string $title, string $note = ''): string
     {
         return $title . '|' . $note;
+    }
+
+    #[AsServiceMethod]
+    #[Rest('/raw-json', methods: Rest::POST)]
+    public function rawJson(#[RequestBody([HeadersInterface::MIME_APPLICATION_JSON])] string $body): string
+    {
+        return $body;
     }
 
     #[AsServiceMethod]

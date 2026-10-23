@@ -147,6 +147,28 @@ class HttpPipelineTest extends TestCase
         $this->assertSame([], $this->pipeline->logRecords());
     }
 
+    public function testMalformedJsonBodyAnswers400(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/sum', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_APPLICATION_JSON], '{"a": 2,'
+        );
+
+        $this->assertSame(400, $response->status);
+        $this->assertStringContainsString('Failed to parse JSON in the request body', $response->body);
+        $this->assertSame([], $this->pipeline->logRecords());
+    }
+
+    public function testContentTypeOutsideTheRequestBodyListAnswers400(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/raw-json', [HeadersInterface::CONTENT_TYPE => 'text/plain'], 'plain text'
+        );
+
+        $this->assertSame(400, $response->status);
+        $this->assertStringContainsString('Invalid content type', $response->body);
+        $this->assertSame([], $this->pipeline->logRecords());
+    }
+
     public function testEmptyBodyHasNoParametersWhateverItsContentType(): void
     {
         $response                   = $this->pipeline->request(
