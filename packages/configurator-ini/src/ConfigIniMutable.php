@@ -191,11 +191,15 @@ class ConfigIniMutable extends ConfigIni implements ConfigMutableInterface
         $this->throwReadOnly();
         $this->load();
 
+        $last                       = \array_pop($path);
+
+        if ($last === null) {
+            return $this;
+        }
+
         $current                    = &$this->data;
 
-        while ($path !== []) {
-            $key                    = \array_shift($path);
-
+        foreach ($path as $key) {
             if (!\is_array($current) || !\array_key_exists($key, $current)) {
                 return $this;
             }
@@ -203,9 +207,13 @@ class ConfigIniMutable extends ConfigIni implements ConfigMutableInterface
             $current                = &$current[$key];
         }
 
-        $this->wasModified          = true;
+        if (!\is_array($current) || !\array_key_exists($last, $current)) {
+            return $this;
+        }
 
-        unset($current);
+        // unset() of a reference variable only detaches it; the key must be unset in its parent array.
+        unset($current[$last]);
+        $this->wasModified          = true;
 
         return $this;
     }

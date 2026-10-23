@@ -90,4 +90,35 @@ class ConfigIniMutableTest extends TestCase
 
         $this->assertSame(['port' => 9095, 'ratio' => 0.5], \parse_ini_file($this->testFile, false, \INI_SCANNER_TYPED));
     }
+
+    public function testRemoveNestedKey(): void
+    {
+        $config                     = new ConfigIniMutable($this->testFile);
+
+        $config->set('foo.bar', 'baz');
+        $config->set('foo.qux', 'quux');
+        $config->save();
+
+        $config                     = new ConfigIniMutable($this->testFile);
+        $config->remove('foo', 'bar');
+        $config->save();
+
+        $this->assertSame(['foo' => ['qux' => 'quux']], \parse_ini_file($this->testFile, true, \INI_SCANNER_TYPED));
+    }
+
+    public function testRemoveMissingKeyKeepsFile(): void
+    {
+        $config                     = new ConfigIniMutable($this->testFile);
+
+        $config->set('foo.bar', 'baz');
+        $config->save();
+
+        $config                     = new ConfigIniMutable($this->testFile);
+        $config->remove('foo', 'absent');
+        $config->remove('foo', 'bar', 'deeper');
+        $config->remove();
+        $config->save();
+
+        $this->assertSame(['foo' => ['bar' => 'baz']], \parse_ini_file($this->testFile, true, \INI_SCANNER_TYPED));
+    }
 }

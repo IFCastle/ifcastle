@@ -76,4 +76,19 @@ class ConfigTomlMutableTest extends TestCase
             \str_replace(["\r\n", "\r"], "\n", \file_get_contents($this->testFile))
         );
     }
+
+    public function testRemoveNestedKey(): void
+    {
+        $config                     = new ConfigTomlMutable($this->testFile);
+
+        $config->set('foo.bar', 'baz');
+        $config->set('foo.qux', 'quux');
+        $config->save();
+
+        $config                     = new ConfigTomlMutable($this->testFile);
+        $config->remove('foo', 'bar');
+        $config->save();
+
+        $this->assertSame(['qux' => 'quux'], (new ConfigToml($this->testFile))->requireSection('foo'));
+    }
 }
