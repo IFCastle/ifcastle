@@ -205,6 +205,41 @@ class HttpPipelineTest extends TestCase
         $this->assertSame('"Multipart field|"', $response->body);
     }
 
+    /**
+     * The server parses a malformed multipart body as an empty form, so the required "title" is missing.
+     */
+    public function testMalformedMultipartBodyAnswers400WithoutLogging(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/form', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_MULTIPART_FORM_DATA . '; boundary=b'],
+            'not a multipart body'
+        );
+
+        $this->assertSame([], $this->pipeline->logRecords());
+        $this->assertSame(400, $response->status);
+    }
+
+    public function testMissingRequiredParameterAnswers400WithoutLogging(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/form', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_FORM_URLENCODED], 'note=only'
+        );
+
+        $this->assertSame([], $this->pipeline->logRecords());
+        $this->assertSame(400, $response->status);
+        $this->assertStringContainsString('title', $response->body);
+    }
+
+    public function testInvalidParameterAnswers400WithoutLogging(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/sum', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_FORM_URLENCODED], 'a=one&b=2'
+        );
+
+        $this->assertSame([], $this->pipeline->logRecords());
+        $this->assertSame(400, $response->status);
+    }
+
     public function testJsonResponseHasOneContentTypeValue(): void
     {
         $response                   = $this->pipeline->get('/pipeline/echo/abc/0');

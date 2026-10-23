@@ -11,6 +11,7 @@ use IfCastle\DI\AutoResolverInterface;
 use IfCastle\DI\ContainerInterface;
 use IfCastle\ServiceManager\Exceptions\ServiceException;
 use IfCastle\ServiceManager\Exceptions\InvalidParameter;
+use IfCastle\ServiceManager\Exceptions\MissingParameter;
 use IfCastle\TypeDefinitions\Exceptions\DefinitionIsNotValid;
 use IfCastle\TypeDefinitions\DefinitionInterface;
 use IfCastle\TypeDefinitions\FromEnv;
@@ -118,12 +119,7 @@ abstract class ExecutorAbstract implements ExecutorInterface
             }
 
             if (false === $parameter->isDefaultValueAvailable() && false === $isParameterExists) {
-                throw new ServiceException([
-                    'template'      => 'Parameter "{parameter}" required by {service}->{method}',
-                    'parameter'     => $parameterName,
-                    'service'       => $methodDescriptor->getClassName(),
-                    'method'        => $methodDescriptor->getFunctionName(),
-                ]);
+                throw new MissingParameter($parameterName, $methodDescriptor->getClassName(), $methodDescriptor->getFunctionName());
             }
 
             if (false === $isParameterExists) {
