@@ -75,6 +75,8 @@
         }
     },
     "scripts": {
+        "pre-install-cmd": "@php -r \"is_file('main.ini') || touch('main.ini');\"",
+        "pre-update-cmd": "@php -r \"is_file('main.ini') || touch('main.ini');\"",
         "test": "phpunit --display-warnings --display-errors --display-notices",
         "analyse": "phpstan analyse --memory-limit=1G",
         "cs:check": "php-cs-fixer fix --dry-run --diff",

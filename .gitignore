@@ -31,6 +31,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# The monorepo root as a project of the IfCastle package installer: it writes these during composer install
 /bootloader/
+/main.ini
+/services.ini
 .phpstan.cache/
 phpstan-output.txt
