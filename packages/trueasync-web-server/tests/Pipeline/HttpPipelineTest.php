@@ -157,6 +157,32 @@ class HttpPipelineTest extends TestCase
         $this->assertSame(['id' => 'abc'], $response->json());
     }
 
+    public function testUrlencodedFormFieldsReachService(): void
+    {
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/form', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_FORM_URLENCODED],
+            'title=Plain+field&json=' . \rawurlencode('{"note":"from json"}')
+        );
+
+        $this->assertSame([], $this->pipeline->logRecords());
+        $this->assertSame(200, $response->status);
+        $this->assertSame('"Plain field|from json"', $response->body);
+    }
+
+    public function testMultipartFormFieldReachesService(): void
+    {
+        $body                       = "--b\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\nMultipart field\r\n--b--\r\n";
+
+        $response                   = $this->pipeline->request(
+            'POST', '/pipeline/form', [HeadersInterface::CONTENT_TYPE => HeadersInterface::MIME_MULTIPART_FORM_DATA . '; boundary=b'],
+            $body
+        );
+
+        $this->assertSame([], $this->pipeline->logRecords());
+        $this->assertSame(200, $response->status);
+        $this->assertSame('"Multipart field|"', $response->body);
+    }
+
     public function testJsonResponseHasOneContentTypeValue(): void
     {
         $response                   = $this->pipeline->get('/pipeline/echo/abc/0');

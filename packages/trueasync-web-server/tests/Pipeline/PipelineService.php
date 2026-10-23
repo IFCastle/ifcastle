@@ -61,6 +61,16 @@ final class PipelineService
         return $a + $b;
     }
 
+    /**
+     * Joins a plain form field with one that may come in the "json" form field.
+     */
+    #[AsServiceMethod]
+    #[Rest('/form', methods: Rest::POST)]
+    public function form(string $title, string $note = ''): string
+    {
+        return $title . '|' . $note;
+    }
+
     #[AsServiceMethod]
     #[Rest('/fail-visibly', methods: Rest::GET)]
     public function failVisibly(): string
