@@ -20,4 +20,10 @@ final class ServiceUnavailable extends RequestException
 
         parent::__construct($message, 503, $type, $detail, $instance, [], $additionalData, $previous);
     }
+
+    /** Seconds the client should wait before a retry; 0 when unknown. */
+    public function getRetryAfter(): int
+    {
+        return $this->retryAfter;
+    }
 }
