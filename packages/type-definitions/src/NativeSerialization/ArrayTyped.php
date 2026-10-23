@@ -24,7 +24,7 @@ final class ArrayTyped
             throw new LogicalException('Serialize not allowed for type ' . $object::class);
         }
 
-        return [self::TYPE => $object::class] + $object->toArray();
+        return [self::TYPE => $object::class] + $object->toArray($validator);
     }
 
     /**
@@ -41,7 +41,7 @@ final class ArrayTyped
                 throw new LogicalException('Serialize not allowed for type ' . $object::class);
             }
 
-            $result[]               = [self::TYPE => $object::class] + $object->toArray();
+            $result[]               = [self::TYPE => $object::class] + $object->toArray($validator);
         }
 
         return $result;
@@ -73,7 +73,7 @@ final class ArrayTyped
             throw new UnSerializeException('Class ' . $class . ' not support ArraySerializableI', self::class);
         }
 
-        return \call_user_func($class . '::fromArray', $object);
+        return \call_user_func($class . '::fromArray', $object, $validator);
     }
 
     /**
