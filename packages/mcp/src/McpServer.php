@@ -64,7 +64,9 @@ final class McpServer
 
     /**
      * Answers one HTTP request to the endpoint. Never throws for anything the client sent: a tool's unexpected
-     * exception is logged and answered 500 with JSON-RPC -32603, and a TooManyRequests of the authenticator 429.
+     * exception is logged and answered with JSON-RPC -32603, and a TooManyRequests of the authenticator 429.
+     * JSON-RPC errors of a request that was read answer 200, except where the 2026-07-28 transport sets the status:
+     * 400 for its version, metadata and header checks, 404 for an unknown method.
      */
     public function handle(HttpRequestInterface $request): McpResponse
     {
@@ -223,7 +225,8 @@ final class McpServer
         }
 
         return $result === null
-            ? McpResponse::error(404, $call->id, self::METHOD_NOT_FOUND, 'Method not found: ' . $call->method)
+            // 200: a 2025-11-25 client reads an HTTP error as a transport failure and a 404 as a lost session.
+            ? McpResponse::error(200, $call->id, self::METHOD_NOT_FOUND, 'Method not found: ' . $call->method)
             : self::result($call, $result);
     }
 
@@ -272,20 +275,19 @@ final class McpServer
 
         try {
             $structured = ($tool->handler)(self::associative($arguments), $principal);
+            $object = $structured === [] ? new \stdClass() : $structured;
+            // Encoded here, so a result JSON cannot carry (invalid UTF-8, INF) is the tool's failure like any other.
+            $text = \json_encode($object, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } catch (ToolError $error) {
             return self::toolFailure($error->getMessage());
         } catch (\Throwable $error) {
             $this->logger?->error('MCP tool {tool} failed: {message}', ['tool' => $tool->name,
                 'message' => $error->getMessage(), 'exception' => $error]);
 
-            return McpResponse::error(500, $call->id, self::INTERNAL_ERROR, 'Internal error');
+            return McpResponse::error(200, $call->id, self::INTERNAL_ERROR, 'Internal error');
         }
 
-        $object = $structured === [] ? new \stdClass() : $structured;
-
-        return ['content' => [['type' => 'text', 'text' => \json_encode($object,
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]],
-            'structuredContent' => $object, 'isError' => false];
+        return ['content' => [['type' => 'text', 'text' => $text]], 'structuredContent' => $object, 'isError' => false];
     }
 
     /** The first validation failure among the headers the current era mirrors from the body; null when all match. */

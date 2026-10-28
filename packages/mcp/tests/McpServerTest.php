@@ -61,6 +61,9 @@ final class McpServerTest extends TestCase
                 static fn(array $arguments, object $principal): array => throw new ToolError('Work not found')))
             ->add(new Tool('break', 'Always fails', ['type' => 'object'],
                 static fn(array $arguments, object $principal): array => throw new \RuntimeException('secret detail')))
+            ->add(new Tool('unencodable', 'Returns invalid UTF-8', ['type' => 'object'],
+                static fn(array $arguments, object $principal): array => ['text' => "\xff"],
+                listed: static fn(object $principal): bool => false))
             ->add(new Tool('hidden', 'Not listed for anybody', ['type' => 'object'],
                 static fn(array $arguments, object $principal): array => [],
                 listed: static fn(object $principal): bool => false));
@@ -233,7 +236,8 @@ final class McpServerTest extends TestCase
         self::assertSame([400, -32022, ['supported' => ['2026-07-28', '2025-11-25', '2025-06-18'],
             'requested' => '2025-03-26']], self::error($this->legacy('tools/list', version: '2025-03-26')));
         self::assertSame('{"jsonrpc":"2.0","id":1,"result":{}}', $this->legacy('ping')->body);
-        self::assertSame([404, -32601, null], self::error($this->legacy('resources/list')));
+        self::assertSame([200, -32601, null], self::error($this->legacy('resources/list')),
+            'an older-era client reads an HTTP error as a transport failure');
     }
 
     public function testToolsListShowsTheListedToolsWithTheirDefinitions(): void
@@ -353,9 +357,12 @@ final class McpServerTest extends TestCase
         self::assertSame([200, -32602, null], self::error($this->legacy('tools/call', ['name' => 'echo',
             'arguments' => ['a']])));
         $broken = $this->legacy('tools/call', ['name' => 'break']);
-        self::assertSame([500, -32603, null], self::error($broken));
+        self::assertSame([200, -32603, null], self::error($broken));
         self::assertStringNotContainsString('secret', (string) $broken->body);
         self::assertSame(['error break secret detail'], $this->logged);
+        self::assertSame([200, -32603, null], self::error($this->legacy('tools/call', ['name' => 'unencodable'])),
+            'a result JSON cannot carry fails like the tool');
+        self::assertCount(2, $this->logged);
     }
 
     public function testToolsAreCheckedWhenRegistered(): void
@@ -368,6 +375,7 @@ final class McpServerTest extends TestCase
             ['ok', ['type' => 'object', 'properties' => ['a' => ['oneOf' => []]]]],
             ['ok', ['type' => 'object', 'properties' => ['a' => ['type' => 'text']]]],
             ['ok', ['type' => 'object', 'properties' => ['a' => ['type' => 'string', 'pattern' => '(']]]],
+            ['ok', ['type' => 'object', 'additionalProperties' => ['type' => 'string']]],
         ];
         foreach ($invalid as [$name, $schema]) {
             try {
@@ -391,6 +399,7 @@ final class McpServerTest extends TestCase
             'ratio' => ['type' => 'number', 'maximum' => 1],
             'list' => ['type' => 'array', 'minItems' => 1, 'maxItems' => 2],
             'maybe' => ['type' => ['string', 'null']],
+            'path' => ['type' => 'string', 'pattern' => '^a/b\\/c$'],
         ]];
         $cases = [
             ['{"state":"hidden"}', null],
@@ -405,6 +414,8 @@ final class McpServerTest extends TestCase
             ['{"list":{}}', 'arguments.list must be of type array'],
             ['{"maybe":null}', null],
             ['{"maybe":false}', 'arguments.maybe must be of type string or null'],
+            ['{"path":"a/b/c"}', null],
+            ['{"path":"a/b\\\\/c"}', 'arguments.path does not match the pattern ^a/b\\/c$'],
         ];
         foreach ($cases as [$json, $expected]) {
             self::assertSame($expected, SchemaValidator::check($schema, \json_decode($json)), $json);

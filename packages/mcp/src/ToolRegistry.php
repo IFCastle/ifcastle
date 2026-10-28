@@ -34,6 +34,7 @@ final class ToolRegistry
      */
     public function listedFor(object $principal): array
     {
-        return \array_values(\array_filter($this->tools, static fn(Tool $tool): bool => $tool->isListedFor($principal)));
+        return \array_values(\array_filter($this->tools,
+            static fn(Tool $tool): bool => $tool->isListedFor($principal)));
     }
 }

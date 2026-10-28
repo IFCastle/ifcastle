@@ -38,6 +38,10 @@ final class SchemaValidator
             }
         }
 
+        if (isset($schema['additionalProperties']) && !\is_bool($schema['additionalProperties'])) {
+            throw new \InvalidArgumentException("$where: additionalProperties must be a boolean");
+        }
+
         if (isset($schema['pattern']) && @\preg_match(self::regex($schema['pattern']), '') === false) {
             throw new \InvalidArgumentException("$where: invalid pattern");
         }
@@ -63,7 +67,9 @@ final class SchemaValidator
         }
 
         if (isset($schema['enum']) && !\in_array($value, $schema['enum'], true)) {
-            return "$path must be one of " . \json_encode($schema['enum'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $values = \json_encode($schema['enum'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            return "$path must be one of $values";
         }
 
         return match (true) {
@@ -179,6 +185,7 @@ final class SchemaValidator
     /** An ECMA 262 pattern as PCRE: unanchored, as JSON Schema matches it, over code points. */
     private static function regex(string $pattern): string
     {
-        return '/' . \str_replace('/', '\/', $pattern) . '/u';
+        // A slash the pattern does not escape yet is escaped for the delimiter.
+        return '/' . \preg_replace('~(?<!\\\\)/~', '\\/', $pattern) . '/u';
     }
 }
