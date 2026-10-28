@@ -85,6 +85,7 @@ jobs:
           - 'design-patterns'
           - 'di'
           - 'events'
+          - 'mcp'
           - 'monolog'
           - 'os-utilities'
           - 'package-installer'
