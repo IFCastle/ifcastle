@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace IfCastle\DesignPatterns\Pool;
 
+use Async\Future;
+use Async\FutureState;
+use Async\OperationCanceledException;
 use IfCastle\DesignPatterns\Factory\FactoryInterface;
 use IfCastle\DI\DisposableInterface;
+
+use function Async\await;
+use function Async\timeout;
 
 /**
  * @template T of object
@@ -22,7 +28,16 @@ class Pool implements PoolInterface
     private int   $lastBorrowAt     = 0;
 
     /**
+     * Borrowers waiting for a free slot, by spl_object_id, oldest first; return() wakes the oldest.
+     * @var array<int, FutureState>
+     */
+    private array $waiters          = [];
+
+    /**
      * @param FactoryInterface<T>       $factory
+     * @param int                       $timeout milliseconds a borrow over $maxPoolSize waits for an object to come
+     *                                           back before it gives null; zero or less gives null at once. Waiting
+     *                                           needs TrueAsync: without it a borrow over the limit never waits.
      * @param StackInterface<T>         $stack
      * @param ReturnFactoryInterface<T> $returnFactory
      */
@@ -46,7 +61,7 @@ class Pool implements PoolInterface
     #[\Override]
     public function borrow(): object|null
     {
-        if (\count($this->borrowed) >= $this->maxPoolSize) {
+        if (\count($this->borrowed) >= $this->maxPoolSize && false === $this->waitForFreeSlot()) {
             return null;
         }
 
@@ -89,6 +104,7 @@ class Pool implements PoolInterface
         }
 
         unset($this->borrowed[\spl_object_id($object)]);
+        $this->wakeWaiter();
 
         $originalObject             = $object->getOriginalObject();
 
@@ -118,6 +134,61 @@ class Pool implements PoolInterface
     {
         $this->stack->clear();
         $this->borrowed             = [];
+
+        while ($this->waiters !== []) {
+            $this->wakeWaiter();
+        }
+    }
+
+    /**
+     * Suspends the current coroutine until a slot is free or the timeout runs out.
+     *
+     * @return bool true when a slot is free
+     */
+    private function waitForFreeSlot(): bool
+    {
+        if ($this->timeout <= 0 || false === \class_exists(FutureState::class)) {
+            return false;
+        }
+
+        $deadline                   = \hrtime(true) + $this->timeout * 1_000_000;
+
+        // A woken borrower checks again: another coroutine may have taken the freed slot before it resumed.
+        while (\count($this->borrowed) >= $this->maxPoolSize) {
+            $left                   = \intdiv($deadline - \hrtime(true), 1_000_000);
+
+            if ($left <= 0) {
+                return false;
+            }
+
+            $waiter                 = new FutureState();
+            $this->waiters[\spl_object_id($waiter)] = $waiter;
+
+            try {
+                await(new Future($waiter), timeout($left));
+            } catch (OperationCanceledException) {
+                // The timeout ran out (a cancel of the coroutine itself is an AsyncCancellation and goes up). A
+                // return() may have woken this waiter in the same tick: its slot is taken here rather than lost.
+                return \count($this->borrowed) < $this->maxPoolSize;
+            } finally {
+                unset($this->waiters[\spl_object_id($waiter)]);
+            }
+        }
+
+        return true;
+    }
+
+    private function wakeWaiter(): void
+    {
+        $id                         = \array_key_first($this->waiters);
+
+        if ($id === null) {
+            return;
+        }
+
+        $waiter                     = $this->waiters[$id];
+        unset($this->waiters[$id]);
+        $waiter->complete(true);
     }
 
     #[\Override]
@@ -135,7 +206,7 @@ class Pool implements PoolInterface
     #[\Override]
     public function getMaxWaitTimeout(): int
     {
-        return 0;
+        return $this->timeout;
     }
 
     #[\Override]

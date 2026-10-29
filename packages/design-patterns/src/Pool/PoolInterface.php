@@ -14,8 +14,9 @@ namespace IfCastle\DesignPatterns\Pool;
 interface PoolInterface
 {
     /**
-     * Borrow an object from the pool.
-     * @return T|null
+     * Borrow an object from the pool. Over the maximum pool size it waits up to getMaxWaitTimeout() for an object to
+     * come back.
+     * @return T|null null when the pool stays full
      */
     public function borrow(): object|null;
 
@@ -44,7 +45,7 @@ interface PoolInterface
     public function getMinPoolSize(): int;
 
     /**
-     * Get the timeout for borrowing an object.
+     * Get the timeout for borrowing an object, in milliseconds; zero or less means a full pool gives null at once.
      *
      */
     public function getMaxWaitTimeout(): int;
